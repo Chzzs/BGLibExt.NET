@@ -25,7 +25,7 @@ It's pretty simple:
 ### Examples
 
 There is an example project ConsoleMyo in the solution. Just hook up the correct port name on your system (like dev/ttyACM0 or COM3)!
- It's pretty simple and straight-forward.
+It's pretty simple and straight-forward. Don't forget to issue the command _exit_ before closing the console otherwise you'll have to reconnect the dongle.
 However if you plan to do a Forms or Gtk application, don't forget to _INVOKE_ methods in the events rather than execute them
 because they happen on a different to the UI thread.
 
