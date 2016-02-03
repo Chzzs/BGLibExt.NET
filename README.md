@@ -20,7 +20,7 @@ Actually the library was developed entirely on a linux platform using MonoDevelo
 
 It's pretty simple: 
 * There is one thread reading from the I/O port and parsing the bluetooth messages
-* There is another thread reading from a buffer containing notifications received from the arbrand and executing hooked up events
+* There is another thread reading from a buffer containing notifications received from the armbrand and executing hooked up events
 
 ### Examples
 
