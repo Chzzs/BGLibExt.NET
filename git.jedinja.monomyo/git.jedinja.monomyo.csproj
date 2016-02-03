@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6889041D-D7D0-41C7-B450-2B6D6417D903}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>git.jedinja.monomyo</RootNamespace>
+    <AssemblyName>git.jedinja.monomyo</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="MonoDevelop.Core, Version=2.6.0.0, Culture=neutral">
+      <Package>monodevelop</Package>
+    </Reference>
+    <Reference Include="Mono.Posix" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="MyoProtocol\ProtocolServices.cs" />
+    <Compile Include="MyoProtocol\ProtocolClassifierPoses.cs" />
+    <Compile Include="MyoProtocol\ProtocolInfoType.cs" />
+    <Compile Include="MyoProtocol\ProtocolClasifierModel.cs" />
+    <Compile Include="MyoProtocol\ProtocolSku.cs" />
+    <Compile Include="MyoProtocol\ProtocolHardwareRevision.cs" />
+    <Compile Include="MyoProtocol\ProtocolVersionType.cs" />
+    <Compile Include="MyoProtocol\ProtocolCommand.cs" />
+    <Compile Include="MyoProtocol\ProtocolCommandType.cs" />
+    <Compile Include="MyoProtocol\ProtocolEmgMode.cs" />
+    <Compile Include="MyoProtocol\ProtocolImuMode.cs" />
+    <Compile Include="MyoProtocol\ProtocolClassifierMode.cs" />
+    <Compile Include="MyoProtocol\ProtocolCommandSetModeType.cs" />
+    <Compile Include="MyoProtocol\ProtocolVibration.cs" />
+    <Compile Include="MyoProtocol\ProtocolCommandVibrateType.cs" />
+    <Compile Include="MyoProtocol\ProtocolSleepMode.cs" />
+    <Compile Include="MyoProtocol\ProtocolUnlockMode.cs" />
+    <Compile Include="MyoProtocol\ProtocolCommandDeepSleepType.cs" />
+    <Compile Include="MyoProtocol\ProtocolCommandSetSleepModeType.cs" />
+    <Compile Include="MyoProtocol\ProtocolCommandVibrate2Type.cs" />
+    <Compile Include="MyoProtocol\ProtocolCommandUnlockType.cs" />
+    <Compile Include="MyoProtocol\ProtocolUserAction.cs" />
+    <Compile Include="MyoProtocol\ProtocolCommandUserActionType.cs" />
+    <Compile Include="MyoProtocol\ProtocolImuDataType.cs" />
+    <Compile Include="MyoProtocol\ProtocolMotionEvent.cs" />
+    <Compile Include="MyoProtocol\ProtocolMotionEventType.cs" />
+    <Compile Include="MyoProtocol\ProtocolClassifierEvent.cs" />
+    <Compile Include="MyoProtocol\ProtocolArm.cs" />
+    <Compile Include="MyoProtocol\ProtocolBraceletDirection.cs" />
+    <Compile Include="MyoProtocol\ProtocolSyncResult.cs" />
+    <Compile Include="MyoProtocol\ProtocolClassifierEventType.cs" />
+    <Compile Include="MyoProtocol\ProtocolEmgDataType.cs" />
+    <Compile Include="BleInfrastructure\ReceiveFromPeripheralThread.cs" />
+    <Compile Include="BleInfrastructure\BleConnector.cs" />
+    <Compile Include="BleInfrastructure\BleProtocol.cs" />
+    <Compile Include="BleInfrastructure\BleConnectorInitData.cs" />
+    <Compile Include="BleInfrastructure\BleConnectorBlocks\BleDiscoverService.cs" />
+    <Compile Include="BleInfrastructure\BleConnectorBlocks\BleConnectToService.cs" />
+    <Compile Include="BleInfrastructure\BleConnectorBlocks\BleBlock.cs" />
+    <Compile Include="BleInfrastructure\BleConnectorBlocks\BleFindServicesAndCharacteristics.cs" />
+    <Compile Include="BleInfrastructure\BleBackbone\BlePeripheralMap.cs" />
+    <Compile Include="BleInfrastructure\BleBackbone\BlePeripheralService.cs" />
+    <Compile Include="BleInfrastructure\BleConnectorBlocks\BleReadAttribute.cs" />
+    <Compile Include="BleInfrastructure\BleBackbone\BlePeripheralCharacteristic.cs" />
+    <Compile Include="BleInfrastructure\BleBackbone\BlePeripheralAttribute.cs" />
+    <Compile Include="BleInfrastructure\BleConnectorBlocks\BleDisconnectFromService.cs" />
+    <Compile Include="Bytes.cs" />
+    <Compile Include="BleInfrastructure\BleConnectorBlocks\BleWriteAttribute.cs" />
+    <Compile Include="SDK\Myo.cs" />
+    <Compile Include="SDK\FirmwareVersion.cs" />
+    <Compile Include="MyoProtocol\ProtocolRevision.cs" />
+    <Compile Include="SDK\MyoPose.cs" />
+    <Compile Include="SDK\ClassifierType.cs" />
+    <Compile Include="SDK\DeviceType.cs" />
+    <Compile Include="SDK\DeviceInformation.cs" />
+    <Compile Include="SDK\HardwareRevision.cs" />
+    <Compile Include="SDK\EmgMode.cs" />
+    <Compile Include="SDK\ImuMode.cs" />
+    <Compile Include="SDK\MyoPoseMode.cs" />
+    <Compile Include="SDK\Notifications\Arm.cs" />
+    <Compile Include="SDK\Notifications\ArmSyncedEventArgs.cs" />
+    <Compile Include="SDK\Notifications\BraceletDirection.cs" />
+    <Compile Include="SDK\Notifications\EmgDataReceivedEventArgs.cs" />
+    <Compile Include="SDK\Notifications\ImuDataOrientation.cs" />
+    <Compile Include="SDK\Notifications\ImuDataReceivedEventArgs.cs" />
+    <Compile Include="SDK\Notifications\NotificationSubscriptionMode.cs" />
+    <Compile Include="SDK\Notifications\Pose.cs" />
+    <Compile Include="SDK\Notifications\PoseChangedEventArgs.cs" />
+    <Compile Include="SDK\Notifications\TapDetectedEventArgs.cs" />
+    <Compile Include="SDK\SleepMode.cs" />
+    <Compile Include="SDK\UnlockType.cs" />
+    <Compile Include="SDK\VibrationType.cs" />
+    <Compile Include="SDK\CustomVibration.cs" />
+    <Compile Include="BleInfrastructure\BleBackbone\BleCCCValue.cs" />
+    <Compile Include="ByteSerializer.cs" />
+    <Compile Include="BleInfrastructure\BleNotifications\CharacteristicValueChangedEventArgs.cs" />
+    <Compile Include="SDK\Notifications\NotificationCarrier.cs" />
+    <Compile Include="SDK\MyoController.cs" />
+    <Compile Include="SDK\Notifications\MyoNotifications.cs" />
+    <Compile Include="SDK\Notifications\BatteryChangeEventArgs.cs" />
+    <Compile Include="SDK\BatteryLevel.cs" />
+    <Compile Include="SDK\Notifications\NotificationEventArgs.cs" />
+    <Compile Include="SDK\Notifications\NotificationAutoConfigurableValues.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\git.jrowberg.bglib\git.jrowberg.bglib.csproj">
+      <Project>{2B935AC1-E43B-459C-9163-B24A2E01637D}</Project>
+      <Name>git.jrowberg.bglib</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="PrefixedHierarchical" ResourceNamePolicy="FileName" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
+</Project>

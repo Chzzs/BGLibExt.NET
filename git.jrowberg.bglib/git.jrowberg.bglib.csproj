@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2B935AC1-E43B-459C-9163-B24A2E01637D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>git.jrowberg.bglib</RootNamespace>
+    <AssemblyName>git.jrowberg.bglib</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Bluegiga\BGLib.cs" />
+    <Compile Include="Bluegiga\BLE\Events\ATTClient\AttributeFoundEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Events\ATTClient\AttributeValueEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Events\ATTClient\FindInformationFoundEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Events\ATTClient\GroupFoundEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Events\ATTClient\IndicatedEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Events\ATTClient\ProcedureCompletedEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Events\ATTClient\ReadMultipleResponseEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Events\Attributes\StatusEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Events\Attributes\UserReadRequestEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Events\Attributes\ValueEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Events\Connection\DisconnectedEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Events\Connection\FeatureIndEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Events\Connection\RawRXEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Events\Connection\StatusEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Events\Connection\VersionIndEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Events\DFU\BootEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Events\Flash\PSKeyEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Events\GAP\ModeChangedEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Events\GAP\ScanResponseEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Events\Hardware\ADCResultEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Events\Hardware\AnalogComparatorStatusEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Events\Hardware\IOPortStatusEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Events\Hardware\SoftTimerEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Events\SM\BondStatusEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Events\SM\BondingFailEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Events\SM\PasskeyDisplayEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Events\SM\PasskeyRequestEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Events\SM\SMPDataEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Events\System\BootEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Events\System\DebugEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Events\System\EndpointWatermarkRXEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Events\System\EndpointWatermarkTXEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Events\System\NoLicenseKeyEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Events\System\ProtocolErrorEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Events\System\ScriptFailureEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\ATTClient\AttributeWriteEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\ATTClient\ExecuteWriteEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\ATTClient\FindByTypeValueEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\ATTClient\FindInformationEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\ATTClient\IndicateConfirmEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\ATTClient\PrepareWriteEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\ATTClient\ReadByGroupTypeEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\ATTClient\ReadByHandleEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\ATTClient\ReadByTypeEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\ATTClient\ReadLongEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\ATTClient\ReadMultipleEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\ATTClient\WriteCommandEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Attributes\ReadEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Attributes\ReadTypeEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Attributes\SendEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Attributes\UserReadResponseEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Attributes\UserWriteResponseEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Attributes\WriteEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Connection\ChannelMapGetEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Connection\ChannelMapSetEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Connection\DisconnectEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Connection\FeaturesGetEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Connection\GetRssiEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Connection\GetStatusEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Connection\RawTXEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Connection\UpdateEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Connection\VersionUpdateEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\DFU\FlashSetAddressEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\DFU\FlashUploadEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\DFU\FlashUploadFinishEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\DFU\ResetEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Flash\ErasePageEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Flash\PSDefragEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Flash\PSDumpEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Flash\PSEraseAllEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Flash\PSEraseEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Flash\PSLoadEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Flash\PSSaveEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Flash\ReadDataEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Flash\WriteDataEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\GAP\ConnectDirectEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\GAP\ConnectSelectiveEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\GAP\DiscoverEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\GAP\EndProcedureEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\GAP\SetAdvDataEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\GAP\SetAdvParametersEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\GAP\SetDirectedConnectableModeEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\GAP\SetFilteringEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\GAP\SetModeEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\GAP\SetPrivacyFlagsEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\GAP\SetScanParametersEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Hardware\ADCReadEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Hardware\AnalogComparatorConfigIrqEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Hardware\AnalogComparatorEnableEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Hardware\AnalogComparatorReadEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Hardware\I2CReadEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Hardware\I2CWriteEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Hardware\IOPortConfigDirectionEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Hardware\IOPortConfigFunctionEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Hardware\IOPortConfigIrqEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Hardware\IOPortConfigPullEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Hardware\IOPortIrqDirectionEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Hardware\IOPortIrqEnableEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Hardware\IOPortReadEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Hardware\IOPortWriteEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Hardware\SPIConfigEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Hardware\SPITransferEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Hardware\SetRxgainEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Hardware\SetSoftTimerEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Hardware\SetTxpowerEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Hardware\TimerComparatorEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Hardware\UsbEnableEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\SM\DeleteBondingEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\SM\EncryptStartEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\SM\GetBondsEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\SM\PasskeyEntryEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\SM\SetBondableModeEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\SM\SetOobDataEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\SM\SetParametersEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\SM\WhitelistBondsEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\System\AddressGetEventHandler.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\System\AesDecryptEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\System\AesEncryptEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\System\AesSetkeyEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\System\EndpointRXEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\System\EndpointSetWatermarksEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\System\EndpointTXEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\System\GetConnectionsEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\System\GetCountersEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\System\GetInfoEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\System\HelloEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\System\ReadMemoryEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\System\RegReadEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\System\RegWriteEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\System\ResetEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\System\WhitelistAppendEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\System\WhitelistClearEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\System\WhitelistRemoveEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Test\ChannelModeEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Test\DebugEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Test\GetChannelMapEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Test\PHYEndEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Test\PHYRXEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Test\PHYResetEventArgs.cs" />
+    <Compile Include="Bluegiga\BLE\Responses\Test\PHYTXEventArgs.cs" />
+    <Compile Include="Bluegiga\BGLibDebug.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Bluegiga\" />
+  </ItemGroup>
+</Project>
