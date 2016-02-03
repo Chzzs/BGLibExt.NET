@@ -10,12 +10,18 @@ namespace ConsoleMyo
 		private static Myo _myo;
 		private static MyoController _contr;
 
+		private static void Print (string str)
+		{
+			Console.WriteLine (str);
+			Console.Write ("> ");
+		}
+
 		public static void Connect ()
 		{
-			Console.WriteLine ("Connecting. Please wait!");
-			_myo = Myo.ConnectEasyPreConfigured ("/dev/ttyACM0", NotificationAutoConfigurableValues.All, true);
+			Print ("Connecting. Please wait!");
+			_myo = Myo.ConnectEasyPreConfigured ("/dev/ttyACM0", NotificationAutoConfigurableValues.All);
 			_contr = _myo.Controller;
-			Console.WriteLine ("Connected");
+			Print ("Connected");
 		}
 
 		public static void Main (string[] args)
@@ -38,7 +44,7 @@ namespace ConsoleMyo
 
 		static void Disconnected (object sender, EventArgs e)
 		{
-			Console.WriteLine ($"Myo was disconnected!");
+			Print ($"Myo was disconnected!");
 			Connect ();
 		}
 
@@ -51,7 +57,7 @@ namespace ConsoleMyo
 			}
 			else
 			{
-				Console.WriteLine ($"Command {command} not recognised! Type help for list of available commands");
+				Print ($"Command {command} not recognised! Type help for list of available commands");
 			}
 		}
 
@@ -87,7 +93,7 @@ namespace ConsoleMyo
 
 		static void _myo_Notifications_PoseChanged (object sender, PoseChangedEventArgs e)
 		{
-			Console.WriteLine ($"{e.NewPose}");
+			Print ($"{e.NewPose}");
 		}
 
 		private static bool imu;
@@ -111,7 +117,7 @@ namespace ConsoleMyo
 			imu_not++;
 			if (imu_not % 100 == 0)
 			{
-				Console.WriteLine ($"Imu data count reached {imu_not}");
+				Print ($"Imu data count reached {imu_not}");
 			}
 		}
 
@@ -136,28 +142,28 @@ namespace ConsoleMyo
 			emg_not++;
 			if (emg_not % 100 == 0)
 			{
-				Console.WriteLine ($"Emg data count reached {emg_not}");
+				Print ($"Emg data count reached {emg_not}");
 			}
 		}
 		public static void Name ()
 		{
 			string name = _contr.GetDeviceName ();
-			Console.WriteLine ($"{name}");
+			Print ($"{name}");
 		}
 		public static void Info ()
 		{
 			var info = _contr.GetDeviceInformation ();
-			Console.WriteLine ($"{info.Device} {info.SerialNumber} {info.UnlockPose}");
+			Print ($"{info.Device} {info.SerialNumber} {info.UnlockPose}");
 		}
 		public static void Firmware ()
 		{
 			var fw = _contr.GetFirmwareVersion ();
-			Console.WriteLine ($"{fw.Major}.{fw.Minor}.{fw.Patch}.{fw.Revision}");
+			Print ($"{fw.Major}.{fw.Minor}.{fw.Patch}.{fw.Revision}");
 		}
 		public static void BatteryLevel ()
 		{
 			var bl = _contr.GetBatteryLevel ();
-			Console.WriteLine ($"Battery level is {bl.Value}%");
+			Print ($"Battery level is {bl.Value}%");
 		}
 
 		public static void Exit ()
@@ -181,10 +187,10 @@ namespace ConsoleMyo
 
 		public static void Help ()
 		{
-			Console.WriteLine ("List of available commands: ");
+			Print ("List of available commands: ");
 			foreach (string key in _commands.Keys)
 			{
-				Console.WriteLine (key);
+				Print (key);
 			}
 		}
 	}
