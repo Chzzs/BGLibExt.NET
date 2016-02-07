@@ -197,7 +197,7 @@ namespace git.jedinja.monomyo.BleInfrastructure
 			Port.Handshake = Handshake.RequestToSend;
 			Port.Open ();
 
-			ReceiveThread = new ReceiveFromPeripheralThread (Port, Ble);
+			ReceiveThread = new ReceiveFromPeripheralThread (Port, Ble, this.Config.PortThreadSleep);
 			ReceiveThread.Start ();
 		}
 

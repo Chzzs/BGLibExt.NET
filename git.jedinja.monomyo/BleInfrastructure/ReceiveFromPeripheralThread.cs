@@ -13,10 +13,13 @@ namespace git.jedinja.monomyo.BleInfrastructure
 
 		private bool StopThread { get; set; }
 
-		public ReceiveFromPeripheralThread (SerialPort port, IReceivedDataParser blueLib)
+		protected int SleepTime { get; set; }
+
+		public ReceiveFromPeripheralThread (SerialPort port, IReceivedDataParser blueLib, int sleepTime)
 		{
 			this.Port = port;
 			this.BlueLib = blueLib;
+			this.SleepTime = sleepTime;
 		}
 
 		private Thread ReceiveThread { get; set; }
@@ -46,6 +49,10 @@ namespace git.jedinja.monomyo.BleInfrastructure
 				if (Port.BytesToRead > 0)
 				{
 					this.ReceivedData ();
+				}
+				else if (this.SleepTime > 0)
+				{
+					Thread.Sleep (this.SleepTime);	
 				}
 			}
 		}

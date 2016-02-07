@@ -19,13 +19,16 @@ namespace git.jedinja.monomyo.SDK.Notifications
 
 		private bool StopThread { get; set; }
 		private Thread _notificationExecutionThread;
+		private readonly int _threadSleep = 0;
+
 		private readonly bool _auto;
 
-		internal MyoNotifications (BleConnector ble, MyoController controller, bool auto = false)
+		internal MyoNotifications (BleConnector ble, MyoController controller, int sleep = 0, bool auto = false)
 		{
 			_ble = ble;
 			_controller = controller;
 			_auto = auto;
+			_threadSleep = sleep;
 		}
 
 		#region Events
@@ -468,6 +471,11 @@ namespace git.jedinja.monomyo.SDK.Notifications
 				    _notificationTypes.TryGetValue (not.CharacteristicUUID, out act))
 				{
 					act (not);
+				}
+
+				if (_queue.Count == 0 && _threadSleep > 0)
+				{
+					Thread.Sleep (_threadSleep);
 				}
 			}
 		}

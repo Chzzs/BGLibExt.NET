@@ -13,25 +13,25 @@ namespace git.jedinja.monomyo.SDK
 		private BleConnector _ble;
 		public MyoController Controller { get; private set; }
 		public MyoNotifications Notifications { get; private set; }
-		public bool Debug  { get; private set; }
+		private readonly MyoConfig _config;
 
-		private Myo (bool debug)
+		private Myo (MyoConfig cfg)
 		{
-			this.Debug = debug;
+			_config = cfg ?? new MyoConfig ();
 		}
 
 		#region Connection and validation
 
-		public static Myo ConnectFullControl (string port, bool debug = false)
+		public static Myo ConnectFullControl (string port, MyoConfig cfg = null)
 		{
-			Myo myo = new Myo (debug);
+			Myo myo = new Myo (cfg);
 			myo.ConnectToDevice (port, NotificationSubscriptionMode.FullControl);
 			return myo;
 		}
 
-		public static Myo ConnectEasyPreConfigured (string port, NotificationAutoConfigurableValues config, bool debug = false)
+		public static Myo ConnectEasyPreConfigured (string port, NotificationAutoConfigurableValues config, MyoConfig cfg = null)
 		{
-			Myo myo = new Myo (debug);
+			Myo myo = new Myo (cfg);
 			myo.ConnectToDevice (port, NotificationSubscriptionMode.EasyConfigurable, config);
 			return myo;
 		}
@@ -45,7 +45,7 @@ namespace git.jedinja.monomyo.SDK
 		private void ConnectToDevice (string port, NotificationSubscriptionMode notificationMode, NotificationAutoConfigurableValues config = null)
 		{
 			// connect
-			_ble = new BleConnector (new BleConnectorInitData (port, ProtocolServices.MYO_INFO_SERVICE, this.Debug));
+			_ble = new BleConnector (new BleConnectorInitData (port, ProtocolServices.MYO_INFO_SERVICE, _config.Debug, _config.PortThreadSleep));
 			_ble.Disconnected += DisconnectedHandler;
 			BlePeripheralMap clientMap = _ble.Connect ();
 
@@ -63,7 +63,7 @@ namespace git.jedinja.monomyo.SDK
 			}
 
 			// handle notification events
-			this.InitializeNotificationSystem (notificationMode, config);
+			this.InitializeNotificationSystem (notificationMode, config, _config.NotificationThreadSleep);
 		}
 
 		private void DisconnectedHandler (object sender, git.jrowberg.bglib.Bluegiga.BLE.Events.Connection.DisconnectedEventArgs e)
@@ -101,7 +101,7 @@ namespace git.jedinja.monomyo.SDK
 
 		#region Notifications
 
-		private void InitializeNotificationSystem (NotificationSubscriptionMode notificationMode, NotificationAutoConfigurableValues config)
+		private void InitializeNotificationSystem (NotificationSubscriptionMode notificationMode, NotificationAutoConfigurableValues config, int threadSleep)
 		{
 			switch (notificationMode)
 			{
@@ -114,12 +114,12 @@ namespace git.jedinja.monomyo.SDK
 
 					this.Controller.IssueCommand_SetReceiveDataMode (config.Emg, config.Imu, config.Pose);
 
-					this.Notifications = new MyoNotifications (_ble, this.Controller, true);
+					this.Notifications = new MyoNotifications (_ble, this.Controller, threadSleep, true);
 					break;
 				}
 			case NotificationSubscriptionMode.FullControl:
 				{
-					this.Notifications = new MyoNotifications (_ble, this.Controller);
+					this.Notifications = new MyoNotifications (_ble, this.Controller, threadSleep);
 					break;
 				}
 			}

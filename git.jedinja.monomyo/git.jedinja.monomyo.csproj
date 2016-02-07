@@ -115,6 +115,7 @@
     <Compile Include="SDK\BatteryLevel.cs" />
     <Compile Include="SDK\Notifications\NotificationEventArgs.cs" />
     <Compile Include="SDK\Notifications\NotificationAutoConfigurableValues.cs" />
+    <Compile Include="SDK\MyoConfig.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
