@@ -6,7 +6,7 @@ This library is based on work by [jedinja/monomyo](https://github.com/jedinja/mo
 
 ## Installation
 
-Install nuget package `BGLibExt`
+Install nuget package [BGLibExt](https://www.nuget.org/packages/BGLibExt/)
 
 ## Usage
 
