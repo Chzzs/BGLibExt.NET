@@ -1,36 +1,72 @@
-# monomyo
+# BGLibExt
 
-A C# implementation of the [Myo protocol](https://github.com/thalmiclabs/myo-bluetooth)
+A higher abstraction level .NET library for Silicon Labs/Bluegiga BLE112 modules.
 
-Special thanks to Jeff Rowberg and his Bluetooth protocol implementation [BgLib](https://github.com/jrowberg/bglib),
-which I, well, just stole. Some minor changes there though: all the event args classes now constitute in different files.
+This library is based on work by [jedinja/monomyo](https://github.com/jedinja/monomyo) and [jrowberg/bglib](https://github.com/jrowberg/bglib). The BGLib wrapper was left as it was and the higher level abstraction code from [jedinja/monomyo](https://github.com/jedinja/monomyo) was refactored to be used as a library and some BLE advertisement related features have been added. So thanks goes out to them since they did most of the work.
 
-Also a lot of thanks go to [dzhu](https://github.com/dzhu/myo-raw) and [Ramir0](https://github.com/Ramir0/Myo4Linux) for the proof of 
-concept provided by their libraries.
+## Installation
 
-### So what's this?
- 
-It's a library entirely written in __C#__ that provides an SDK-like interface to the [Thalmic's Myo Armbrand](https://www.myo.com/).
-It's __not__ a language binding on top of the C++ sdk library Thalmic released nor it needs the Myo Connect software to run.
-Thus it is well suited for every platform having .NET installed like Windows, Linux via Mono, OSX via Mono.
-Actually the library was developed entirely on a linux platform using MonoDevelop IDE.
+Install nuget package `BGLibExt`
 
+## Usage
 
-### Architecture
+### Discover devices
 
-It's pretty simple: 
-* There is one thread reading from the I/O port and parsing the bluetooth messages
-* There is another thread reading from a buffer containing notifications received from the armbrand and executing hooked up events
+```c#
+var ble = new BleConnector("COM1");
+ble.ScanResponse += OnDiscoverDevices;
+ble.StartDeviceDiscovery();
+Task.Delay(5000).Wait();
+ble.StopDeviceDiscovery();
+ble.ScanResponse -= OnDiscoverDevices;
 
-### Examples
+private void OnDiscoverDevices(object sender, BleScanResponseReceivedEventArgs args)
+{
+}
+```
 
-There is an example project ConsoleMyo in the solution. Just hook up the correct port name on your system (like dev/ttyACM0 or COM3)!
-It's pretty simple and straight-forward. Don't forget to issue the command _exit_ before closing the console otherwise you'll have to reconnect the dongle.
-However if you plan to do a Forms or Gtk application, don't forget to _INVOKE_ methods in the events rather than execute them
-because they happen on a different to the UI thread.
+### Connect to device
 
-### Dependencies
+```c#
+var ble = new BleConnector("COM1");
+var peripheralMap = ble.Connect(address, addressType);
+```
 
-You need .net for windows or mono and bluez libraries for linux.
-It's tested on Windows 10 and Arch Linux.
+### Disconnect from device
 
+```c#
+var ble = new BleConnector("COM1");
+var peripheralMap = ble.Connect(address, addressType);
+ble.Disconnect();
+```
+
+### Read characteristic
+
+```c#
+var ble = new BleConnector("COM1");
+var peripheralMap = ble.Connect(address, addressType);
+var data = ble.ReadCharacteristic(characteristicId, false);
+```
+
+### Write characteristic
+
+```c#
+var ble = new BleConnector("COM1");
+var peripheralMap = ble.Connect(address, addressType);
+ble.WriteCharacteristic(characteristicId, false);
+```
+
+### Characteristic notifications
+
+```c#
+var ble = new BleConnector("COM1");
+var peripheralMap = ble.Connect(address, addressType);
+// Validate peripheralMap
+// Get uuid of characteristic for enabling notifications
+ble.WriteClientCharacteristicConfiguration(uuid, BleCCCValue.NotificationsEnabled);
+ble.CharacteristicValueChanged += OnValueChanged;
+
+private void OnValueChanged(object sender, BleCharacteristicValueChangedEventArgs e)
+{
+}
+```

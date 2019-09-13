@@ -1,0 +1,54 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29102.190
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BGLibExt", "BGLibExt\BGLibExt.csproj", "{34420076-B2B1-4D78-854C-A0CBECCC5270}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BGLibExtTest", "BGLibExtTest\BGLibExtTest.csproj", "{D7B3A950-93FB-496B-A504-CB9DFBDE3C50}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{34420076-B2B1-4D78-854C-A0CBECCC5270}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34420076-B2B1-4D78-854C-A0CBECCC5270}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34420076-B2B1-4D78-854C-A0CBECCC5270}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34420076-B2B1-4D78-854C-A0CBECCC5270}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7B3A950-93FB-496B-A504-CB9DFBDE3C50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7B3A950-93FB-496B-A504-CB9DFBDE3C50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7B3A950-93FB-496B-A504-CB9DFBDE3C50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7B3A950-93FB-496B-A504-CB9DFBDE3C50}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D40F3EF4-66A1-4760-983B-1E475AE4AD20}
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		Policies = $0
+		$0.TextStylePolicy = $3
+		$1.inheritsSet = null
+		$1.scope = text/x-csharp
+		$0.CSharpFormattingPolicy = $2
+		$2.StatementBraceStyle = NextLine
+		$2.ElseNewLinePlacement = NewLine
+		$2.AfterDelegateDeclarationParameterComma = True
+		$2.BeforeSizeOfParentheses = True
+		$2.SpacesBeforeBrackets = False
+		$2.SpacesAfterTypecast = True
+		$2.BlankLinesBetweenMembers = 0
+		$2.inheritsSet = Mono
+		$2.inheritsScope = text/x-csharp
+		$2.scope = text/x-csharp
+		$3.FileWidth = 120
+		$3.inheritsSet = Mono
+		$3.inheritsScope = text/plain
+		$3.scope = text/plain
+		$0.VersionControlPolicy = $4
+		$4.inheritsSet = Mono
+	EndGlobalSection
+EndGlobal

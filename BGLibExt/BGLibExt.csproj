@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Company>BGLibExt</Company>
+    <Product>BGLibExt</Product>
+    <PackageId>BGLibExt</PackageId>
+    <Authors>BGLibExt</Authors>
+    <PackageProjectUrl>https://github.com/BGLibExt/BGLibExt.NET</PackageProjectUrl>
+    <Description>A higher abstraction level .NET library for Silicon Labs/Bluegiga BLE112 modules</Description>
+    <RepositoryUrl>https://github.com/BGLibExt/BGLibExt.NET</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>BLE BGLib BLE112</PackageTags>
+    <Copyright>Copyright (c) BGLibExt</Copyright>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.IO.Ports" Version="4.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>
