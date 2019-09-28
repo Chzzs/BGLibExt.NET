@@ -5,7 +5,13 @@ VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BGLibExt", "BGLibExt\BGLibExt.csproj", "{34420076-B2B1-4D78-854C-A0CBECCC5270}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BGLibExtTest", "BGLibExtTest\BGLibExtTest.csproj", "{D7B3A950-93FB-496B-A504-CB9DFBDE3C50}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BGLibExtTest", "BGLibExtTest\BGLibExtTest.csproj", "{D7B3A950-93FB-496B-A504-CB9DFBDE3C50}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BGLibExt.Samples.DeviceDiscovery", "BGLibExt.Samples.DeviceDiscovery\BGLibExt.Samples.DeviceDiscovery.csproj", "{8B1D966D-BBD2-49D3-ACB8-7E427E431685}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BGLibExt.Samples.FlowerCareSmartMonitor", "BGLibExt.Samples.FlowerCareSmartMonitor\BGLibExt.Samples.FlowerCareSmartMonitor.csproj", "{5E7E8193-CDFD-40C5-83DA-35A34AB13A87}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BGLibExt.Samples.MiTemperatureHumidityMonitor", "BGLibExt.Samples.MiTemperatureHumidityMonitor\BGLibExt.Samples.MiTemperatureHumidityMonitor.csproj", "{6AC99812-01A9-402D-A3D9-FF7707E775A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +27,18 @@ Global
 		{D7B3A950-93FB-496B-A504-CB9DFBDE3C50}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D7B3A950-93FB-496B-A504-CB9DFBDE3C50}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D7B3A950-93FB-496B-A504-CB9DFBDE3C50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B1D966D-BBD2-49D3-ACB8-7E427E431685}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B1D966D-BBD2-49D3-ACB8-7E427E431685}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B1D966D-BBD2-49D3-ACB8-7E427E431685}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B1D966D-BBD2-49D3-ACB8-7E427E431685}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E7E8193-CDFD-40C5-83DA-35A34AB13A87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E7E8193-CDFD-40C5-83DA-35A34AB13A87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E7E8193-CDFD-40C5-83DA-35A34AB13A87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E7E8193-CDFD-40C5-83DA-35A34AB13A87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AC99812-01A9-402D-A3D9-FF7707E775A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AC99812-01A9-402D-A3D9-FF7707E775A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AC99812-01A9-402D-A3D9-FF7707E775A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AC99812-01A9-402D-A3D9-FF7707E775A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

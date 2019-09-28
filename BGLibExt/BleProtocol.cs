@@ -2,7 +2,7 @@
 
 namespace BGLibExt
 {
-    internal class BleProtocol : IReceivedDataParser
+    internal class BleProtocol : IParseable
     {
         public BGLib Lib { get; private set; }
 

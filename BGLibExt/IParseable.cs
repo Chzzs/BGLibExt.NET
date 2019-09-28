@@ -1,6 +1,6 @@
 ﻿namespace BGLibExt
 {
-    internal interface IReceivedDataParser
+    internal interface IParseable
     {
         void Parse(byte data);
     }

@@ -4,18 +4,18 @@ using System.Threading;
 
 namespace BGLibExt
 {
-    internal class ReceiveFromPeripheralThread
+    internal class SerialPortReceiveThread
     {
-        private readonly IReceivedDataParser _blueLib;
+        private readonly IParseable _parseable;
         private readonly SerialPort _serialPort;
         private readonly int _sleepTime;
         private Thread _receiveThread;
         private bool _stopThread;
 
-        public ReceiveFromPeripheralThread(SerialPort port, IReceivedDataParser blueLib, int sleepTime)
+        public SerialPortReceiveThread(SerialPort serialPort, IParseable parseable, int sleepTime)
         {
-            _serialPort = port;
-            _blueLib = blueLib;
+            _serialPort = serialPort;
+            _parseable = parseable;
             _sleepTime = sleepTime;
         }
 
@@ -23,7 +23,7 @@ namespace BGLibExt
         {
             if (_serialPort == null || !_serialPort.IsOpen)
             {
-                throw new Exception("In order to read from a peripheral an initialized and open serial port is required!");
+                throw new Exception("To start receiving data an open serial port is required");
             }
 
             _stopThread = false;
@@ -41,13 +41,13 @@ namespace BGLibExt
         {
             var bytesToRead = _serialPort.BytesToRead;
 
-            var inData = new byte[bytesToRead];
+            var readBytes = new byte[bytesToRead];
 
-            _serialPort.Read(inData, 0, bytesToRead);
+            _serialPort.Read(readBytes, 0, bytesToRead);
 
-            foreach (var @byte in inData)
+            foreach (var readByte in readBytes)
             {
-                _blueLib.Parse(@byte);
+                _parseable.Parse(readByte);
             }
         }
 
