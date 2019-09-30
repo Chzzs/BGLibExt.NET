@@ -45,7 +45,6 @@ namespace BGLibExt.BleCommands
                     var advertisementData = BleAdvertisingDataParser.Parse(e.data);
                     if (advertisementData.Where(x => ServiceUuidAdvertisements.Contains(x.Type)).Any(x => x.Data.SequenceEqual(serviceUuid)))
                     {
-
                         taskCompletionSource.SetResult(e);
                     }
                 }

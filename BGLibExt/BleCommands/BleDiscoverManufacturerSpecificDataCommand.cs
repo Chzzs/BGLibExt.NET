@@ -36,7 +36,6 @@ namespace BGLibExt.BleCommands
                     var manufacturerAdvertisementData = advertisementData.SingleOrDefault(x => x.Type == BleAdvertisingDataType.ManufacturerSpecificData);
                     if (manufacturerAdvertisementData?.GetManufacturerId() == manufacturerId)
                     {
-
                         taskCompletionSource.SetResult(e);
                     }
                 }
@@ -50,7 +49,7 @@ namespace BGLibExt.BleCommands
                         Ble.SendCommand(Port, Ble.Lib.BLECommandGAPSetScanParameters(0xC8, 0xC8, 1));
                         Ble.SendCommand(Port, Ble.Lib.BLECommandGAPDiscover(1));
 
-                        return await taskCompletionSource.Task.ConfigureAwait(continueOnCapturedContext: false);
+                        return await taskCompletionSource.Task.ConfigureAwait(false);
                     }
                 }
                 finally
