@@ -5,7 +5,13 @@ VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BGLibExt", "BGLibExt\BGLibExt.csproj", "{34420076-B2B1-4D78-854C-A0CBECCC5270}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BGLibExtTest", "BGLibExtTest\BGLibExtTest.csproj", "{D7B3A950-93FB-496B-A504-CB9DFBDE3C50}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BGLibExtTest", "BGLibExtTest\BGLibExtTest.csproj", "{D7B3A950-93FB-496B-A504-CB9DFBDE3C50}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BGLibExt.Samples.DeviceDiscovery", "BGLibExt.Samples.DeviceDiscovery\BGLibExt.Samples.DeviceDiscovery.csproj", "{19CA3C39-9E86-4C7F-A68F-E2B016DEF4DE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BGLibExt.Samples.FlowerCareSmartMonitor", "BGLibExt.Samples.FlowerCareSmartMonitor\BGLibExt.Samples.FlowerCareSmartMonitor.csproj", "{BF6DAEF1-73B6-4532-B49B-86747B18BC31}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BGLibExt.Samples.MiTemperatureHumidityMonitor", "BGLibExt.Samples.MiTemperatureHumidityMonitor\BGLibExt.Samples.MiTemperatureHumidityMonitor.csproj", "{D48F7AB0-D952-42D1-9B99-7271C1371175}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +27,18 @@ Global
 		{D7B3A950-93FB-496B-A504-CB9DFBDE3C50}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D7B3A950-93FB-496B-A504-CB9DFBDE3C50}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D7B3A950-93FB-496B-A504-CB9DFBDE3C50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19CA3C39-9E86-4C7F-A68F-E2B016DEF4DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19CA3C39-9E86-4C7F-A68F-E2B016DEF4DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19CA3C39-9E86-4C7F-A68F-E2B016DEF4DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19CA3C39-9E86-4C7F-A68F-E2B016DEF4DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF6DAEF1-73B6-4532-B49B-86747B18BC31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF6DAEF1-73B6-4532-B49B-86747B18BC31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF6DAEF1-73B6-4532-B49B-86747B18BC31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF6DAEF1-73B6-4532-B49B-86747B18BC31}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D48F7AB0-D952-42D1-9B99-7271C1371175}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D48F7AB0-D952-42D1-9B99-7271C1371175}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D48F7AB0-D952-42D1-9B99-7271C1371175}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D48F7AB0-D952-42D1-9B99-7271C1371175}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

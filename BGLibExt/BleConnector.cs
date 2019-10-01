@@ -61,6 +61,41 @@ namespace BGLibExt
         {
             Init();
 
+            return ConnectInternal(address, addressType);
+        }
+
+        /// <summary>
+        /// Connect to the first device that is being discovered by the specified manufacturer ID
+        /// </summary>
+        /// <param name="manufacturerId">Manufacturer ID</param>
+        /// <returns></returns>
+        public BlePeripheralMap ConnectByManufacturerId(ushort manufacturerId)
+        {
+            Init();
+
+            var discoverBlock = new BleDiscoverManufacturerSpecificData(_bleProtocol, _serialPort, manufacturerId);
+            var found = discoverBlock.Execute();
+
+            return ConnectInternal(found.sender, (BleAddressType)found.address_type);
+        }
+
+        /// <summary>
+        /// Connect to the first device that is being discovered by the specified  service UUID
+        /// </summary>
+        /// <param name="serviceUuid">Service UUID</param>
+        /// <returns></returns>
+        public BlePeripheralMap ConnectByServiceUuid(byte[] serviceUuid)
+        {
+            Init();
+
+            var discoverBlock = new BleDiscoverService(_bleProtocol, _serialPort, serviceUuid);
+            var found = discoverBlock.Execute();
+
+            return ConnectInternal(found.sender, (BleAddressType)found.address_type);
+        }
+
+        private BlePeripheralMap ConnectInternal(byte[] address, BleAddressType addressType)
+        {
             var connectBlock = new BleConnectToService(_bleProtocol, _serialPort, address, addressType);
             _connectionHandle = connectBlock.Execute().connection;
 
@@ -73,32 +108,6 @@ namespace BGLibExt
             IsConnected = true;
 
             return _blePeripheralMap;
-        }
-
-        /// <summary>
-        /// Connect to the first device that is being discovered by the specified manufacturer ID
-        /// </summary>
-        /// <param name="manufacturerId">Manufacturer ID</param>
-        /// <returns></returns>
-        public BlePeripheralMap ConnectByManufacturerId(ushort manufacturerId)
-        {
-            var discoverBlock = new BleDiscoverManufacturerSpecificData(_bleProtocol, _serialPort, manufacturerId);
-            var found = discoverBlock.Execute();
-
-            return Connect(found.sender, (BleAddressType)found.address_type);
-        }
-
-        /// <summary>
-        /// Connect to the first device that is being discovered by the specified  service UUID
-        /// </summary>
-        /// <param name="serviceUuid">Service UUID</param>
-        /// <returns></returns>
-        public BlePeripheralMap ConnectByServiceUuid(byte[] serviceUuid)
-        {
-            var discoverBlock = new BleDiscoverService(_bleProtocol, _serialPort, serviceUuid);
-            var found = discoverBlock.Execute();
-
-            return Connect(found.sender, (BleAddressType)found.address_type);
         }
 
         /// <summary>

@@ -7,6 +7,16 @@ namespace BGLibExt.BleBlocks
 {
     internal class BleDiscoverService : BleBlock
     {
+        private static readonly BleAdvertisingDataType[] ServiceUuidAdvertisements = new BleAdvertisingDataType[]
+           {
+            BleAdvertisingDataType.IncompleteListof16BitServiceClassUUIDs,
+            BleAdvertisingDataType.CompleteListof16BitServiceClassUUIDs,
+            BleAdvertisingDataType.IncompleteListof32BitServiceClassUUIDs,
+            BleAdvertisingDataType.CompleteListof32BitServiceClassUUIDs,
+            BleAdvertisingDataType.IncompleteListof128BitServiceClassUUIDs,
+            BleAdvertisingDataType.CompleteListof128BitServiceClassUUIDs
+           };
+
         private ScanResponseEventArgs _scanResponse = null;
 
         public byte[] ServiceUuid { get; private set; }
@@ -38,46 +48,8 @@ namespace BGLibExt.BleBlocks
 
         private void FindService(object sender, ScanResponseEventArgs e)
         {
-            // pull all advertised service info from ad packet
-            // taken from bglib example code
-            var ad_services = new List<byte[]>();
-            byte[] this_field = { };
-            var bytes_left = 0;
-            var field_offset = 0;
-            for (var i = 0; i < e.data.Length; i++)
-            {
-                if (bytes_left == 0)
-                {
-                    bytes_left = e.data[i];
-                    this_field = new byte[e.data[i]];
-                    field_offset = i + 1;
-                }
-                else
-                {
-                    this_field[i - field_offset] = e.data[i];
-                    bytes_left--;
-                    if (bytes_left == 0)
-                    {
-                        if (this_field[0] == 0x02 || this_field[0] == 0x03)
-                        {
-                            // partial or complete list of 16-bit UUIDs
-                            ad_services.Add(this_field.Skip(1).Take(2).Reverse().ToArray());
-                        }
-                        else if (this_field[0] == 0x04 || this_field[0] == 0x05)
-                        {
-                            // partial or complete list of 32-bit UUIDs
-                            ad_services.Add(this_field.Skip(1).Take(4).Reverse().ToArray());
-                        }
-                        else if (this_field[0] == 0x06 || this_field[0] == 0x07)
-                        {
-                            // partial or complete list of 128-bit UUIDs
-                            ad_services.Add(this_field.Skip(1).Take(16).Reverse().ToArray());
-                        }
-                    }
-                }
-            }
-
-            if (ad_services.Any(a => a.SequenceEqual(((byte[])ServiceUuid).Reverse())))
+            var advertisementData = BleAdvertisingDataParser.Parse(e.data);
+            if (advertisementData.Where(x => ServiceUuidAdvertisements.Contains(x.Type)).Any(x => x.Data.SequenceEqual(ServiceUuid)))
             {
                 _scanResponse = e;
             }
