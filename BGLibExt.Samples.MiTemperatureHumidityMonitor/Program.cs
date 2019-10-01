@@ -39,7 +39,7 @@ namespace BGLibExt.Samples.MiTemperatureHumidityMonitor
             var batteryLevel = battery[0];
             var firmware = await miTemperatureHumidityMonitor.CharacteristicsByUuid[new Guid("00002a26-0000-1000-8000-00805f9b34fb")].ReadValueAsync(true);
             var firmwareVersion = Encoding.ASCII.GetString(firmware).TrimEnd(new char[] { (char)0 });
-            Console.WriteLine($"Battery level: {batteryLevel}");
+            Console.WriteLine($"Battery level: {batteryLevel}%");
             Console.WriteLine($"Firmware version: {firmwareVersion}");
 
             Console.WriteLine();
@@ -53,6 +53,8 @@ namespace BGLibExt.Samples.MiTemperatureHumidityMonitor
                 {
                     var temperature = float.Parse(match.Groups[1].Captures[0].Value);
                     var airHumidity = float.Parse(match.Groups[2].Captures[0].Value);
+                    Console.WriteLine($"Temperature: {temperature} °C");
+                    Console.WriteLine($"Air humidity: {airHumidity}%");
                 }
                 manualResetEvent.Set();
             };

@@ -19,7 +19,7 @@ namespace BGLibExt
         internal BleCharacteristic(byte connection, byte[] uuid, ushort handle)
         {
             Connection = connection;
-            Uuid = uuid.ToBleGuid();
+            Uuid = uuid.ToGuid();
             Handle = handle;
         }
 
