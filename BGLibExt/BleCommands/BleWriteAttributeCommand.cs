@@ -31,7 +31,7 @@ namespace BGLibExt.BleCommands
 
                 void OnProcedureCompleted(object sender, ProcedureCompletedEventArgs e)
                 {
-                    if (e.connection == connection)
+                    if (e.connection == connection && e.chrhandle == attributeHandle)
                     {
                         taskCompletionSource.SetResult(e);
                     }

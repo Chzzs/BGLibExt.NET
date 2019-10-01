@@ -45,7 +45,7 @@ namespace BGLibExt.BleCommands
 
                 void OnProcedureCompleted(object sender, ProcedureCompletedEventArgs e)
                 {
-                    if (e.connection == connection)
+                    if (e.connection == connection && e.chrhandle == attributeHandle)
                     {
                         if (attributeValueEventArgs != null)
                         {
@@ -67,11 +67,11 @@ namespace BGLibExt.BleCommands
                     {
                         if (readLongValue)
                         {
-                            Ble.SendCommand(Port, Ble.Lib.BLECommandATTClientReadByHandle(connection, attributeHandle));
+                            Ble.SendCommand(Port, Ble.Lib.BLECommandATTClientReadLong(connection, attributeHandle));
                         }
                         else
                         {
-                            Ble.SendCommand(Port, Ble.Lib.BLECommandATTClientReadLong(connection, attributeHandle));
+                            Ble.SendCommand(Port, Ble.Lib.BLECommandATTClientReadByHandle(connection, attributeHandle));
                         }
 
                         return await taskCompletionSource.Task.ConfigureAwait(continueOnCapturedContext: false);

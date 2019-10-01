@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BGLibExt
 {
@@ -7,7 +8,7 @@ namespace BGLibExt
         public List<BleAttribute> Attributes { get; private set; }
         public List<BleCharacteristic> Characteristics { get; private set; }
         public ushort EndHandle { get; private set; }
-        public byte[] ServiceUuid { get; private set; }
+        public Guid Uuid { get; private set; }
         public ushort StartHandle { get; private set; }
 
         public BleService(byte[] uuid, ushort startHandle, ushort endHandle)
@@ -15,7 +16,7 @@ namespace BGLibExt
             Attributes = new List<BleAttribute>();
             Characteristics = new List<BleCharacteristic>();
 
-            ServiceUuid = uuid;
+            Uuid = uuid.ToBleGuid();
             StartHandle = startHandle;
             EndHandle = endHandle;
         }

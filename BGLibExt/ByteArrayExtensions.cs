@@ -11,6 +11,21 @@ namespace BGLibExt
             return hex.Replace("-", "");
         }
 
+        public static Guid ToBleGuid(this byte[] value)
+        {
+            if (value.Length == 16)
+            {
+                return value.ToGuid();
+            }
+            else
+            {
+                var baseGuid = new Guid("00000000-0000-1000-8000-00805F9B34FB").ToUuidByteArray().ToList();
+                baseGuid.RemoveRange(12, value.Length);
+                baseGuid.InsertRange(12, value);
+                return baseGuid.ToArray().ToGuid();
+            }
+        }
+
         public static Guid ToGuid(this byte[] value)
         {
             var guidBytes = value.ToArray().Reverse().ToArray();

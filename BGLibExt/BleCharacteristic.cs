@@ -7,7 +7,7 @@ namespace BGLibExt
     public class BleCharacteristic
     {
         internal byte Connection { get; private set; }
-        public byte[] AttributeUuid { get; private set; }
+        public Guid Uuid { get; private set; }
         public ushort Handle { get; private set; }
         public ushort HandleCCC { get; private set; }
         public bool HasCCC { get; private set; }
@@ -19,7 +19,7 @@ namespace BGLibExt
         internal BleCharacteristic(byte connection, byte[] uuid, ushort handle)
         {
             Connection = connection;
-            AttributeUuid = uuid;
+            Uuid = uuid.ToBleGuid();
             Handle = handle;
         }
 
@@ -47,7 +47,7 @@ namespace BGLibExt
         {
             if (!HasCCC)
             {
-                throw new ArgumentException($"Client characteristic {AttributeUuid.ByteArrayToHexString()} doesn't have a configuration attribute!");
+                throw new ArgumentException($"Client characteristic {Uuid} doesn't have a configuration attribute!");
             }
 
             var rawValue = await ReadValueAsync(HandleCCC, false);
@@ -76,7 +76,7 @@ namespace BGLibExt
         {
             if (!HasCCC)
             {
-                throw new ArgumentException($"Client characteristic {AttributeUuid.ByteArrayToHexString()} doesn't have a configuration attribute!");
+                throw new ArgumentException($"Client characteristic {Uuid} doesn't have a configuration attribute!");
             }
 
             var byteSerializer = new ByteSerializer();

@@ -26,7 +26,7 @@ namespace BGLibExt.Samples.DeviceDiscovery
             Console.WriteLine("Start device discovery");
             bleDeviceDiscovery.StartDeviceDiscovery();
 
-            await Task.Delay(5000);
+            await Task.Delay(10000);
 
             Console.WriteLine("Stop device discovery");
             bleDeviceDiscovery.StopDeviceDiscovery();

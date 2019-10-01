@@ -3,7 +3,6 @@ using Bluegiga.BLE.Events.ATTClient;
 using Bluegiga.BLE.Events.Connection;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -30,17 +29,7 @@ namespace BGLibExt
             {
                 service.Characteristics.ForEach(characteristic =>
                 {
-                    if (characteristic.AttributeUuid.Length < 16)
-                    {
-                        var baseGuid = new Guid("00000000-0000-1000-8000-00805F9B34FB").ToUuidByteArray().ToList();
-                        baseGuid.RemoveRange(12, characteristic.AttributeUuid.Length);
-                        baseGuid.InsertRange(12, characteristic.AttributeUuid);
-                        CharacteristicsByUuid.Add(baseGuid.ToArray().ToGuid(), characteristic);
-                    }
-                    else
-                    {
-                        CharacteristicsByUuid.Add(characteristic.AttributeUuid.ToGuid(), characteristic);
-                    }
+                    CharacteristicsByUuid.Add(characteristic.Uuid, characteristic);
                 });
             });
 

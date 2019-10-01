@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -11,7 +10,7 @@ namespace BGLibExt.Samples.MiTemperatureHumidityMonitor
     {
         static void Main(string[] args)
         {
-            BleModuleConnection.Instance.Start("COM3");
+            BleModuleConnection.Instance.Start("COM3", true, 0);
 
             RunAsync().Wait();
 
@@ -20,20 +19,33 @@ namespace BGLibExt.Samples.MiTemperatureHumidityMonitor
 
         private static async Task RunAsync()
         {
-            Console.WriteLine("Discover Mi temperature and humidity monitor");
-            var flowerCareDevice = await BleDevice.ConnectByManufacturerIdAsync(0x0000);
+            Console.WriteLine("Discover and connecto to Mi temperature and humidity monitor");
+            var miTemperatureHumidityMonitor = await BleDevice.ConnectByServiceUuidAsync("0F180A18".HexStringToByteArray());
 
+            Console.WriteLine("Device services and characteristics");
+            foreach(var service in miTemperatureHumidityMonitor.Services)
+            {
+                Console.WriteLine($"Service Uuid={service.Uuid}");
+
+                foreach (var characteristic in service.Characteristics)
+                {
+                    Console.WriteLine($"Characteristic Uuid={characteristic.Uuid}, Handle={characteristic.Handle}, HasCCC={characteristic.HasCCC}");
+                }
+            }
+
+            Console.WriteLine();
             Console.WriteLine("Read device status");
-            var battery = await flowerCareDevice.CharacteristicsByUuid[new Guid("00002a19-0000-1000-8000-00805f9b34fb")].ReadValueAsync();
+            var battery = await miTemperatureHumidityMonitor.CharacteristicsByUuid[new Guid("00002a19-0000-1000-8000-00805f9b34fb")].ReadValueAsync(true);
             var batteryLevel = battery[0];
-            var firmware = await flowerCareDevice.CharacteristicsByUuid[new Guid("00002a26-0000-1000-8000-00805f9b34fb")].ReadValueAsync();
+            var firmware = await miTemperatureHumidityMonitor.CharacteristicsByUuid[new Guid("00002a26-0000-1000-8000-00805f9b34fb")].ReadValueAsync(true);
             var firmwareVersion = Encoding.ASCII.GetString(firmware).TrimEnd(new char[] { (char)0 });
             Console.WriteLine($"Battery level: {batteryLevel}");
             Console.WriteLine($"Firmware version: {firmwareVersion}");
 
+            Console.WriteLine();
             Console.WriteLine("Read device sensor data");
             var manualResetEvent = new ManualResetEvent(false);
-            flowerCareDevice.CharacteristicsByUuid[new Guid("226caa55-6476-4566-7562-66734470666d")].ValueChanged += (sender, args) =>
+            miTemperatureHumidityMonitor.CharacteristicsByUuid[new Guid("226caa55-6476-4566-7562-66734470666d")].ValueChanged += (sender, args) =>
             {
                 var dataString = Encoding.ASCII.GetString(args.Value).TrimEnd(new char[] { (char)0 });
                 var match = Regex.Match(dataString, @"T=([\d\.]*)\s+?H=([\d\.]*)");
@@ -44,8 +56,11 @@ namespace BGLibExt.Samples.MiTemperatureHumidityMonitor
                 }
                 manualResetEvent.Set();
             };
-            await flowerCareDevice.CharacteristicsByUuid[new Guid("226caa55-6476-4566-7562-66734470666d")].WriteClientCharacteristicConfigurationAsync(BleCCCValue.NotificationsEnabled);
+            await miTemperatureHumidityMonitor.CharacteristicsByUuid[new Guid("226caa55-6476-4566-7562-66734470666d")].WriteClientCharacteristicConfigurationAsync(BleCCCValue.NotificationsEnabled);
             manualResetEvent.WaitOne();
+
+            Console.WriteLine("Disconnect");
+            await miTemperatureHumidityMonitor.DisconnectAsync();
         }
     }
 }
