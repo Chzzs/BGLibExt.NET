@@ -1,50 +1,66 @@
-﻿using System;
+﻿using Bluegiga;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace BGLibExt.Samples.MiTemperatureHumidityMonitor
 {
     class Program
     {
-        static void Main(string[] args)
+        private readonly BleModuleConnection _bleModuleConnection;
+        private readonly BleDeviceFactory _bleDeviceFactory;
+        private readonly ILogger<Program> _logger;
+
+        public Program(BleModuleConnection bleModuleConnection, BleDeviceFactory bleDeviceFactory, ILogger<Program> logger)
         {
-            BleModuleConnection.Instance.Start("COM3", true, 0);
-
-            RunAsync().Wait();
-
-            BleModuleConnection.Instance.Stop();
+            _bleModuleConnection = bleModuleConnection;
+            _bleDeviceFactory = bleDeviceFactory;
+            _logger = logger;
         }
 
-        private static async Task RunAsync()
+        static void Main(string[] args)
         {
-            Console.WriteLine("Discover and connecto to Mi temperature and humidity monitor");
-            var miTemperatureHumidityMonitor = await BleDevice.ConnectByServiceUuidAsync("0F180A18".HexStringToByteArray());
+            var servicesProvider = new ServiceCollection()
+                .AddLogging(configure => configure.AddConsole())
+                .AddTransient<BGLib, BGLibDebug>()
+                .AddSingleton<BleModuleConnection>()
+                .AddTransient<Program>()
+                .BuildServiceProvider();
+            var program = servicesProvider.GetRequiredService<Program>();
 
-            Console.WriteLine("Device services and characteristics");
-            foreach(var service in miTemperatureHumidityMonitor.Services)
+            program.RunAsync().Wait();
+        }
+
+        private async Task RunAsync()
+        {
+            _bleModuleConnection.Start("COM3");
+
+            _logger.LogInformation("Discover and connecto to Mi temperature and humidity monitor");
+            var miTemperatureHumidityMonitor = await _bleDeviceFactory.ConnectByServiceUuidAsync("0F180A18".HexStringToByteArray());
+
+            _logger.LogInformation("Device services and characteristics");
+            foreach (var service in miTemperatureHumidityMonitor.Services)
             {
-                Console.WriteLine($"Service Uuid={service.Uuid}");
+                _logger.LogInformation($"Service Uuid={service.Uuid}");
 
                 foreach (var characteristic in service.Characteristics)
                 {
-                    Console.WriteLine($"Characteristic Uuid={characteristic.Uuid}, Handle={characteristic.Handle}, HasCCC={characteristic.HasCCC}");
+                    _logger.LogInformation($"Characteristic Uuid={characteristic.Uuid}, Handle={characteristic.Handle}, HasCCC={characteristic.HasCCC}");
                 }
             }
 
-            Console.WriteLine();
-            Console.WriteLine("Read device status");
-            var battery = await miTemperatureHumidityMonitor.CharacteristicsByUuid[new Guid("00002a19-0000-1000-8000-00805f9b34fb")].ReadValueAsync(true);
+            _logger.LogInformation("Read device status");
+            var battery = await miTemperatureHumidityMonitor.CharacteristicsByUuid[new Guid("00002a19-0000-1000-8000-00805f9b34fb")].ReadValueAsync();
             var batteryLevel = battery[0];
-            var firmware = await miTemperatureHumidityMonitor.CharacteristicsByUuid[new Guid("00002a26-0000-1000-8000-00805f9b34fb")].ReadValueAsync(true);
+            var firmware = await miTemperatureHumidityMonitor.CharacteristicsByUuid[new Guid("00002a26-0000-1000-8000-00805f9b34fb")].ReadValueAsync();
             var firmwareVersion = Encoding.ASCII.GetString(firmware).TrimEnd(new char[] { (char)0 });
-            Console.WriteLine($"Battery level: {batteryLevel}%");
-            Console.WriteLine($"Firmware version: {firmwareVersion}");
+            _logger.LogInformation($"Battery level: {batteryLevel}%");
+            _logger.LogInformation($"Firmware version: {firmwareVersion}");
 
-            Console.WriteLine();
-            Console.WriteLine("Read device sensor data");
-            var manualResetEvent = new ManualResetEvent(false);
+            _logger.LogInformation("Read device sensor data");
             miTemperatureHumidityMonitor.CharacteristicsByUuid[new Guid("226caa55-6476-4566-7562-66734470666d")].ValueChanged += (sender, args) =>
             {
                 var dataString = Encoding.ASCII.GetString(args.Value).TrimEnd(new char[] { (char)0 });
@@ -53,16 +69,21 @@ namespace BGLibExt.Samples.MiTemperatureHumidityMonitor
                 {
                     var temperature = float.Parse(match.Groups[1].Captures[0].Value);
                     var airHumidity = float.Parse(match.Groups[2].Captures[0].Value);
-                    Console.WriteLine($"Temperature: {temperature} °C");
-                    Console.WriteLine($"Air humidity: {airHumidity}%");
+                    _logger.LogInformation($"Temperature: {temperature} °C");
+                    _logger.LogInformation($"Air humidity: {airHumidity}%");
                 }
-                manualResetEvent.Set();
             };
+            _logger.LogInformation("Enable notifications");
             await miTemperatureHumidityMonitor.CharacteristicsByUuid[new Guid("226caa55-6476-4566-7562-66734470666d")].WriteClientCharacteristicConfigurationAsync(BleCCCValue.NotificationsEnabled);
-            manualResetEvent.WaitOne();
+            var ccc = await miTemperatureHumidityMonitor.CharacteristicsByUuid[new Guid("226caa55-6476-4566-7562-66734470666d")].ReadClientCharacteristicConfigurationAsync();
+            _logger.LogInformation($"CCC {ccc}");
 
-            Console.WriteLine("Disconnect");
+            await Task.Delay(5000);
+
+            _logger.LogInformation("Disconnect");
             await miTemperatureHumidityMonitor.DisconnectAsync();
+
+            _bleModuleConnection.Stop();
         }
     }
 }

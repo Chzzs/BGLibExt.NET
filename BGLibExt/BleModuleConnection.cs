@@ -1,26 +1,18 @@
-﻿using System.IO.Ports;
+﻿using Bluegiga;
+using System.IO.Ports;
 
 namespace BGLibExt
 {
     public sealed class BleModuleConnection
     {
-        private static readonly BleModuleConnection instance = new BleModuleConnection();
+        private readonly BGLib _bgLib;
+        private SerialPortReceiveThread _serialPortReceiveThread;
 
-        private bool _isDebugMode;
-        private string _portName;
+        public SerialPort SerialPort { get; private set; }
 
-        public static BleModuleConnection Instance { get { return instance; } }
-
-        internal BleProtocol BleProtocol { get; private set; }
-        internal SerialPortReceiveThread ReceiveFromPeripheralThread { get; private set; }
-        internal SerialPort SerialPort { get; private set; }
-
-        static BleModuleConnection()
+        public BleModuleConnection(BGLib bgLib)
         {
-        }
-
-        private BleModuleConnection()
-        {
+            _bgLib = bgLib;
         }
 
         /// <summary>
@@ -29,30 +21,24 @@ namespace BGLibExt
         /// <param name="portName">Serial port name</param>
         public void Start(string portName)
         {
-            Start(portName, false, 0);
+            Start(portName, 0);
         }
 
         /// <summary>
         ///  Start the BLE112 serial communication
         /// </summary>
         /// <param name="portName">Serial port name</param>
-        /// <param name="isDebugMode">Print debug information to console</param>
         /// <param name="portThreadSleep">Sleep duration while reading serial port data</param>
-        public void Start(string portName, bool isDebugMode, int portThreadSleep)
+        public void Start(string portName, int portThreadSleep)
         {
-            _portName = portName;
-            _isDebugMode = isDebugMode;
-
-            BleProtocol = new BleProtocol(_isDebugMode);
-
-            SerialPort = new SerialPort(_portName, 115200, Parity.None, 8, StopBits.One)
+            SerialPort = new SerialPort(portName, 115200, Parity.None, 8, StopBits.One)
             {
                 Handshake = Handshake.RequestToSend
             };
             SerialPort.Open();
 
-            ReceiveFromPeripheralThread = new SerialPortReceiveThread(SerialPort, BleProtocol, portThreadSleep);
-            ReceiveFromPeripheralThread.Start();
+            _serialPortReceiveThread = new SerialPortReceiveThread(SerialPort, _bgLib, portThreadSleep);
+            _serialPortReceiveThread.Start();
         }
 
         /// <summary>
@@ -60,12 +46,10 @@ namespace BGLibExt
         /// </summary>
         public void Stop()
         {
-            ReceiveFromPeripheralThread.Stop();
+            _serialPortReceiveThread.Stop();
 
             SerialPort.Close();
-            SerialPort = null;
-
-            BleProtocol = null;
+            SerialPort.Dispose();
         }
     }
 }

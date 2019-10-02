@@ -1,4 +1,5 @@
-﻿using Bluegiga.BLE.Events.ATTClient;
+﻿using Bluegiga;
+using Bluegiga.BLE.Events.ATTClient;
 using System;
 using System.Collections.Generic;
 using System.IO.Ports;
@@ -14,13 +15,8 @@ namespace BGLibExt.BleCommands
         private const ushort GattMinHandle = 0x0001;
         private static readonly byte[] GattServiceTypePrimary = new byte[] { 0x00, 0x28 };
 
-        public BleFindServicesCommand()
-            : base(BleModuleConnection.Instance.BleProtocol, BleModuleConnection.Instance.SerialPort)
-        {
-        }
-
-        public BleFindServicesCommand(BleProtocol ble, SerialPort port)
-            : base(ble, port)
+        public BleFindServicesCommand(BGLib bgLib, BleModuleConnection bleModuleConnection)
+            : base(bgLib, bleModuleConnection)
         {
         }
 
@@ -63,20 +59,20 @@ namespace BGLibExt.BleCommands
 
                 try
                 {
-                    Ble.Lib.BLEEventATTClientGroupFound += OnGroupFound;
-                    Ble.Lib.BLEEventATTClientProcedureCompleted += OnProcedureCompleted;
+                    _bgLib.BLEEventATTClientGroupFound += OnGroupFound;
+                    _bgLib.BLEEventATTClientProcedureCompleted += OnProcedureCompleted;
 
                     using (cancellationTokenSource.Token.Register(() => taskCompletionSource.SetCanceled(), useSynchronizationContext: false))
                     {
-                        Ble.SendCommand(Port, Ble.Lib.BLECommandATTClientReadByGroupType(connection, GattMinHandle, GattMaxHandle, (byte[])GattServiceTypePrimary));
+                        _bgLib.SendCommand(_bleModuleConnection.SerialPort, _bgLib.BLECommandATTClientReadByGroupType(connection, GattMinHandle, GattMaxHandle, (byte[])GattServiceTypePrimary));
 
                         return await taskCompletionSource.Task.ConfigureAwait(continueOnCapturedContext: false);
                     }
                 }
                 finally
                 {
-                    Ble.Lib.BLEEventATTClientGroupFound -= OnGroupFound;
-                    Ble.Lib.BLEEventATTClientProcedureCompleted -= OnProcedureCompleted;
+                    _bgLib.BLEEventATTClientGroupFound -= OnGroupFound;
+                    _bgLib.BLEEventATTClientProcedureCompleted -= OnProcedureCompleted;
                 }
             }
         }

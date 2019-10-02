@@ -1,4 +1,5 @@
-﻿using Bluegiga.BLE.Events.Connection;
+﻿using Bluegiga;
+using Bluegiga.BLE.Events.Connection;
 using System;
 using System.IO.Ports;
 using System.Threading;
@@ -8,13 +9,8 @@ namespace BGLibExt.BleCommands
 {
     internal class BleConnectCommand : BleCommand
     {
-        public BleConnectCommand()
-            : base(BleModuleConnection.Instance.BleProtocol, BleModuleConnection.Instance.SerialPort)
-        {
-        }
-
-        public BleConnectCommand(BleProtocol ble, SerialPort port)
-            : base(ble, port)
+        public BleConnectCommand(BGLib bgLib, BleModuleConnection bleModuleConnection)
+            : base(bgLib, bleModuleConnection)
         {
         }
 
@@ -44,18 +40,18 @@ namespace BGLibExt.BleCommands
 
                 try
                 {
-                    Ble.Lib.BLEEventConnectionStatus += OnConnectionStatus;
+                    _bgLib.BLEEventConnectionStatus += OnConnectionStatus;
 
                     using (cancellationTokenSource.Token.Register(() => taskCompletionSource.SetCanceled(), useSynchronizationContext: false))
                     {
-                        Ble.SendCommand(Port, Ble.Lib.BLECommandGAPConnectDirect((byte[])address, (byte)addressType, 0x20, 0x30, 0x100, 0));
+                        _bgLib.SendCommand(_bleModuleConnection.SerialPort, _bgLib.BLECommandGAPConnectDirect((byte[])address, (byte)addressType, 0x20, 0x30, 0x100, 0));
 
                         return await taskCompletionSource.Task.ConfigureAwait(continueOnCapturedContext: false);
                     }
                 }
                 finally
                 {
-                    Ble.Lib.BLEEventConnectionStatus -= OnConnectionStatus;
+                    _bgLib.BLEEventConnectionStatus -= OnConnectionStatus;
                 }
             }
         }

@@ -1,4 +1,5 @@
-﻿using Bluegiga.BLE.Events.ATTClient;
+﻿using Bluegiga;
+using Bluegiga.BLE.Events.ATTClient;
 using System.IO.Ports;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,13 +8,8 @@ namespace BGLibExt.BleCommands
 {
     internal class BleWriteAttributeCommand : BleCommand
     {
-        public BleWriteAttributeCommand()
-            : base(BleModuleConnection.Instance.BleProtocol, BleModuleConnection.Instance.SerialPort)
-        {
-        }
-
-        public BleWriteAttributeCommand(BleProtocol ble, SerialPort port)
-            : base(ble, port)
+        public BleWriteAttributeCommand(BGLib bgLib, BleModuleConnection bleModuleConnection)
+            : base(bgLib, bleModuleConnection)
         {
         }
 
@@ -39,18 +35,18 @@ namespace BGLibExt.BleCommands
 
                 try
                 {
-                    Ble.Lib.BLEEventATTClientProcedureCompleted += OnProcedureCompleted;
+                    _bgLib.BLEEventATTClientProcedureCompleted += OnProcedureCompleted;
 
                     using (cancellationTokenSource.Token.Register(() => taskCompletionSource.SetCanceled(), useSynchronizationContext: false))
                     {
-                        Ble.SendCommand(Port, Ble.Lib.BLECommandATTClientAttributeWrite(connection, attributeHandle, value));
+                        _bgLib.SendCommand(_bleModuleConnection.SerialPort, _bgLib.BLECommandATTClientAttributeWrite(connection, attributeHandle, value));
 
                         return await taskCompletionSource.Task.ConfigureAwait(continueOnCapturedContext: false);
                     }
                 }
                 finally
                 {
-                    Ble.Lib.BLEEventATTClientProcedureCompleted -= OnProcedureCompleted;
+                    _bgLib.BLEEventATTClientProcedureCompleted -= OnProcedureCompleted;
                 }
             }
         }

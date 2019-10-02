@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Bluegiga;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -6,30 +9,48 @@ namespace BGLibExt.Samples.DeviceDiscovery
 {
     class Program
     {
-        static void Main(string[] args)
+        private readonly BleModuleConnection _bleModuleConnection;
+        private readonly BleDeviceDiscovery _bleDeviceDiscovery;
+        private readonly ILogger<Program> _logger;
+
+        public Program(BleModuleConnection bleModuleConnection, BleDeviceDiscovery bleDeviceDiscovery, ILogger<Program> logger)
         {
-            BleModuleConnection.Instance.Start("COM3");
-
-            RunAsync().Wait();
-
-            BleModuleConnection.Instance.Stop();
+            _bleModuleConnection = bleModuleConnection;
+            _bleDeviceDiscovery = bleDeviceDiscovery;
+            _logger = logger;
         }
 
-        private static async Task RunAsync()
+        static void Main(string[] args)
         {
-            var bleDeviceDiscovery = new BleDeviceDiscovery();
-            bleDeviceDiscovery.ScanResponse += (sender, args) =>
+            var servicesProvider = new ServiceCollection()
+                .AddLogging(configure => configure.AddConsole())
+                .AddTransient<BGLib, BGLibDebug>()
+                .AddSingleton<BleModuleConnection>()
+                .AddTransient<Program>()
+                .BuildServiceProvider();
+            var program = servicesProvider.GetRequiredService<Program>();
+
+            program.RunAsync().Wait();
+        }
+
+        private async Task RunAsync()
+        {
+            _bleModuleConnection.Start("COM3");
+
+            _bleDeviceDiscovery.ScanResponse += (sender, args) =>
             {
-                Console.WriteLine($"Device discovered, Address={args.Address.ByteArrayToHexString()}, AddressType={args.AddressType}, Rssi={args.Rssi}, PacketType={args.PacketType}, Bond={args.Bond}, ParsedData={string.Join(";", args.ParsedData.Select(x => $"{x.Type}={x.ToDebugString()}"))}");
+                _logger.LogInformation($"Device discovered, Address={args.Address.ByteArrayToHexString()}, AddressType={args.AddressType}, Rssi={args.Rssi}, PacketType={args.PacketType}, Bond={args.Bond}, ParsedData={string.Join(";", args.ParsedData.Select(x => $"{x.Type}={x.ToDebugString()}"))}");
             };
 
-            Console.WriteLine("Start device discovery");
-            bleDeviceDiscovery.StartDeviceDiscovery();
+            _logger.LogInformation("Start device discovery");
+            _bleDeviceDiscovery.StartDeviceDiscovery();
 
             await Task.Delay(10000);
 
-            Console.WriteLine("Stop device discovery");
-            bleDeviceDiscovery.StopDeviceDiscovery();
+            _logger.LogInformation("Stop device discovery");
+            _bleDeviceDiscovery.StopDeviceDiscovery();
+
+            _bleModuleConnection.Stop();
         }
     }
 }

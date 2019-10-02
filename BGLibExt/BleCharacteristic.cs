@@ -1,12 +1,17 @@
 ﻿using BGLibExt.BleCommands;
+using Bluegiga;
 using System;
+using System.IO.Ports;
 using System.Threading.Tasks;
 
 namespace BGLibExt
 {
     public class BleCharacteristic
     {
-        internal byte Connection { get; private set; }
+        private readonly BGLib _bgLib;
+        private readonly BleModuleConnection _bleModuleConnection;
+        private readonly byte _connection;
+
         public Guid Uuid { get; private set; }
         public ushort Handle { get; private set; }
         public ushort HandleCCC { get; private set; }
@@ -16,9 +21,12 @@ namespace BGLibExt
 
         public delegate void CharacteristicValueChangedEventHandler(object sender, BleCharacteristicValueChangedEventArgs e);
 
-        internal BleCharacteristic(byte connection, byte[] uuid, ushort handle)
+        internal BleCharacteristic(BGLib bgLib, BleModuleConnection bleModuleConnection, byte connection, byte[] uuid, ushort handle)
         {
-            Connection = connection;
+            _bgLib = bgLib;
+            _bleModuleConnection = bleModuleConnection;
+
+            _connection = connection;
             Uuid = uuid.ToGuid();
             Handle = handle;
         }
@@ -87,15 +95,15 @@ namespace BGLibExt
 
         private async Task<byte[]> ReadValueAsync(ushort handle, bool readLongValue)
         {
-            var readAttributeCommand = new BleReadAttributeCommand();
-            var (_, attributeValueEventArgs) = await readAttributeCommand.ExecuteAsync(Connection, handle, readLongValue);
+            var readAttributeCommand = new BleReadAttributeCommand(_bgLib, _bleModuleConnection);
+            var (_, attributeValueEventArgs) = await readAttributeCommand.ExecuteAsync(_connection, handle, readLongValue);
             return attributeValueEventArgs.value;
         }
 
         private async Task WriteValueAsync(ushort handle, byte[] value)
         {
-            var writeAttributeCommand = new BleWriteAttributeCommand();
-            await writeAttributeCommand.ExecuteAsync(Connection, handle, value);
+            var writeAttributeCommand = new BleWriteAttributeCommand(_bgLib, _bleModuleConnection);
+            await writeAttributeCommand.ExecuteAsync(_connection, handle, value);
         }
 
         internal void TriggerCharacteristicValueChanged(byte[] data)

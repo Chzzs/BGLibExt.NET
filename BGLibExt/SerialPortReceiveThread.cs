@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Bluegiga;
+using System;
 using System.IO.Ports;
 using System.Threading;
 
@@ -6,16 +7,16 @@ namespace BGLibExt
 {
     internal class SerialPortReceiveThread
     {
-        private readonly IParseable _parseable;
+        private readonly BGLib _bgLib;
         private readonly SerialPort _serialPort;
         private readonly int _sleepTime;
         private Thread _receiveThread;
         private bool _stopThread;
 
-        public SerialPortReceiveThread(SerialPort serialPort, IParseable parseable, int sleepTime)
+        internal SerialPortReceiveThread(SerialPort serialPort, BGLib bgLib, int sleepTime)
         {
             _serialPort = serialPort;
-            _parseable = parseable;
+            _bgLib = bgLib;
             _sleepTime = sleepTime;
         }
 
@@ -47,7 +48,7 @@ namespace BGLibExt
 
             foreach (var readByte in readBytes)
             {
-                _parseable.Parse(readByte);
+                _bgLib.Parse(readByte);
             }
         }
 

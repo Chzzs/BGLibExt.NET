@@ -1,22 +1,32 @@
-﻿using Bluegiga.BLE.Events.GAP;
+﻿using Bluegiga;
+using Bluegiga.BLE.Events.GAP;
 
 namespace BGLibExt
 {
     public class BleDeviceDiscovery
     {
+        private readonly BGLib _bgLib;
+        private readonly BleModuleConnection _bleModuleConnection;
+
         public event ScanResponseReceivedEventHandler ScanResponse;
 
         public delegate void ScanResponseReceivedEventHandler(object sender, BleScanResponseReceivedEventArgs e);
+
+        public BleDeviceDiscovery(BGLib bgLib, BleModuleConnection bleModuleConnection)
+        {
+            _bgLib = bgLib;
+            _bleModuleConnection = bleModuleConnection;
+        }
 
         /// <summary>
         /// Start device discovery
         /// </summary>
         public void StartDeviceDiscovery()
         {
-            BleModuleConnection.Instance.BleProtocol.Lib.BLEEventGAPScanResponse += OnScanResponse;
+            _bgLib.BLEEventGAPScanResponse += OnScanResponse;
 
-            BleModuleConnection.Instance.BleProtocol.Lib.SendCommand(BleModuleConnection.Instance.SerialPort, BleModuleConnection.Instance.BleProtocol.Lib.BLECommandGAPSetScanParameters(0xC8, 0xC8, 1));
-            BleModuleConnection.Instance.BleProtocol.Lib.SendCommand(BleModuleConnection.Instance.SerialPort, BleModuleConnection.Instance.BleProtocol.Lib.BLECommandGAPDiscover(1));
+            _bgLib.SendCommand(_bleModuleConnection.SerialPort, _bgLib.BLECommandGAPSetScanParameters(0xC8, 0xC8, 1));
+            _bgLib.SendCommand(_bleModuleConnection.SerialPort, _bgLib.BLECommandGAPDiscover(1));
         }
 
         /// <summary>
@@ -24,9 +34,9 @@ namespace BGLibExt
         /// </summary>
         public void StopDeviceDiscovery()
         {
-            BleModuleConnection.Instance.BleProtocol.Lib.SendCommand(BleModuleConnection.Instance.SerialPort, BleModuleConnection.Instance.BleProtocol.Lib.BLECommandGAPEndProcedure());
+            _bgLib.SendCommand(_bleModuleConnection.SerialPort, _bgLib.BLECommandGAPEndProcedure());
 
-            BleModuleConnection.Instance.BleProtocol.Lib.BLEEventGAPScanResponse -= OnScanResponse;
+            _bgLib.BLEEventGAPScanResponse -= OnScanResponse;
         }
 
         private void OnScanResponse(object sender, ScanResponseEventArgs e)

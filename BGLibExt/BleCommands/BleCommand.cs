@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO.Ports;
+﻿using Bluegiga;
 
 namespace BGLibExt.BleCommands
 {
@@ -7,13 +6,13 @@ namespace BGLibExt.BleCommands
     {
         protected const int DefaultTimeout = 10000;
 
-        protected BleProtocol Ble { get; private set; }
-        protected SerialPort Port { get; private set; }
+        protected BGLib _bgLib;
+        protected BleModuleConnection _bleModuleConnection;
 
-        protected BleCommand(BleProtocol ble, SerialPort port)
+        protected BleCommand(BGLib bgLib, BleModuleConnection bleModuleConnection)
         {
-            Ble = ble;
-            Port = port;
+            _bgLib = bgLib;
+            _bleModuleConnection = bleModuleConnection;
         }
     }
 }

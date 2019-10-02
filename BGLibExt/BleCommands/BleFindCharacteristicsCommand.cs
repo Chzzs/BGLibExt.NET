@@ -1,4 +1,5 @@
-﻿using Bluegiga.BLE.Events.ATTClient;
+﻿using Bluegiga;
+using Bluegiga.BLE.Events.ATTClient;
 using System;
 using System.Collections.Generic;
 using System.IO.Ports;
@@ -10,13 +11,8 @@ namespace BGLibExt.BleCommands
 {
     internal class BleFindCharacteristicsCommand : BleCommand
     {
-        public BleFindCharacteristicsCommand()
-                   : base(BleModuleConnection.Instance.BleProtocol, BleModuleConnection.Instance.SerialPort)
-        {
-        }
-
-        public BleFindCharacteristicsCommand(BleProtocol ble, SerialPort port)
-            : base(ble, port)
+        public BleFindCharacteristicsCommand(BGLib bgLib, BleModuleConnection bleModuleConnection)
+            : base(bgLib, bleModuleConnection)
         {
         }
 
@@ -60,25 +56,25 @@ namespace BGLibExt.BleCommands
 
                 try
                 {
-                    Ble.Lib.BLEEventATTClientFindInformationFound += OnFindInformationFound;
-                    Ble.Lib.BLEEventATTClientProcedureCompleted += OnProcedureCompleted;
+                    _bgLib.BLEEventATTClientFindInformationFound += OnFindInformationFound;
+                    _bgLib.BLEEventATTClientProcedureCompleted += OnProcedureCompleted;
 
                     using (cancellationTokenSource.Token.Register(() => taskCompletionSource.SetCanceled(), useSynchronizationContext: false))
                     {
-                        Ble.SendCommand(Port, Ble.Lib.BLECommandATTClientFindInformation(connection, startHandle, endHandle));
+                        _bgLib.SendCommand(_bleModuleConnection.SerialPort, _bgLib.BLECommandATTClientFindInformation(connection, startHandle, endHandle));
 
                         return await taskCompletionSource.Task.ConfigureAwait(continueOnCapturedContext: false);
                     }
                 }
                 finally
                 {
-                    Ble.Lib.BLEEventATTClientFindInformationFound -= OnFindInformationFound;
-                    Ble.Lib.BLEEventATTClientProcedureCompleted -= OnProcedureCompleted;
+                    _bgLib.BLEEventATTClientFindInformationFound -= OnFindInformationFound;
+                    _bgLib.BLEEventATTClientProcedureCompleted -= OnProcedureCompleted;
                 }
             }
         }
 
-        private static List<BleCharacteristic> ConvertAttributesToCharacteristics(List<BleAttribute> attributes)
+        private List<BleCharacteristic> ConvertAttributesToCharacteristics(List<BleAttribute> attributes)
         {
             // *=== Service: 42 48 12 4a 7f 2c 48 47 b9 de 04 a9 02 00 06 d5
             // *====== Att: 26 - 00 28
@@ -117,7 +113,7 @@ namespace BGLibExt.BleCommands
                     // if new characteristic begins - create it else skip and do nothing
                     if (createCharacteristic)
                     {
-                        current = new BleCharacteristic(attr.Connection, attr.AttributeUuid, attr.Handle);
+                        current = new BleCharacteristic(_bgLib, _bleModuleConnection, attr.Connection, attr.AttributeUuid, attr.Handle);
                         createCharacteristic = false;
 
                         characteristics.Add(current);

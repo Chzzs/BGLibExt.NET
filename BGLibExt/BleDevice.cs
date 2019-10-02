@@ -1,4 +1,5 @@
 ﻿using BGLibExt.BleCommands;
+using Bluegiga;
 using Bluegiga.BLE.Events.ATTClient;
 using Bluegiga.BLE.Events.Connection;
 using System;
@@ -10,6 +11,8 @@ namespace BGLibExt
 {
     public class BleDevice
     {
+        private readonly BGLib _bgLib;
+        private readonly BleModuleConnection _bleModuleConnection;
         private readonly byte _connectionHandle;
 
         public event DisconnectedEventHandler Disconnected;
@@ -19,8 +22,10 @@ namespace BGLibExt
         public Dictionary<ushort, BleCharacteristic> CharacteristicsByHandle { get; private set; } = new Dictionary<ushort, BleCharacteristic>();
         public List<BleService> Services { get; private set; }
 
-        private BleDevice(byte connectionHandle, List<BleService> services)
+        internal BleDevice(BGLib bgLib, BleModuleConnection bleModuleConnection, byte connectionHandle, List<BleService> services)
         {
+            _bgLib = bgLib;
+            _bleModuleConnection = bleModuleConnection;
             _connectionHandle = connectionHandle;
 
             Services = services;
@@ -41,62 +46,10 @@ namespace BGLibExt
                 });
             });
 
+            _bgLib.BLEEventATTClientAttributeValue += OnClientAttributeValue;
+            _bgLib.BLEEventConnectionDisconnected += OnDisconnected;
+
             IsConnected = true;
-        }
-
-        /// <summary>
-        /// Connect to a device
-        /// </summary>
-        /// <param name="address">Device address</param>
-        /// <param name="addressType">Device address type</param>
-        /// <returns></returns>
-        public static async Task<BleDevice> ConnectAsync(byte[] address, BleAddressType addressType)
-        {
-            var connectCommand = new BleConnectCommand();
-            var connectionStatus = await connectCommand.ExecuteAsync(address, addressType);
-
-            var findServicesCommand = new BleFindServicesCommand();
-            var findCharacteristicsCommand = new BleFindCharacteristicsCommand();
-            var services = await findServicesCommand.ExecuteAsync(connectionStatus.connection);
-            foreach (var service in services)
-            {
-                var (characteristics, attributes) = await findCharacteristicsCommand.ExecuteAsync(connectionStatus.connection, service.StartHandle, service.EndHandle);
-                service.Characteristics.AddRange(characteristics);
-                service.Attributes.AddRange(attributes);
-            }
-
-            var bleDevice = new BleDevice(connectionStatus.connection, services);
-
-            BleModuleConnection.Instance.BleProtocol.Lib.BLEEventATTClientAttributeValue += bleDevice.OnClientAttributeValue;
-            BleModuleConnection.Instance.BleProtocol.Lib.BLEEventConnectionDisconnected += bleDevice.OnDisconnected;
-
-            return bleDevice;
-        }
-
-        /// <summary>
-        /// Connect to the first device that is being discovered by the specified manufacturer ID
-        /// </summary>
-        /// <param name="manufacturerId">Manufacturer ID</param>
-        /// <returns></returns>
-        public static async Task<BleDevice> ConnectByManufacturerIdAsync(ushort manufacturerId)
-        {
-            var discoverManufacturerSpecificDataCommand = new BleDiscoverManufacturerSpecificDataCommand();
-            var discoveredDevice = await discoverManufacturerSpecificDataCommand.ExecuteAsync(manufacturerId);
-
-            return await ConnectAsync(discoveredDevice.sender, (BleAddressType)discoveredDevice.address_type);
-        }
-
-        /// <summary>
-        /// Connect to the first device that is being discovered by the specified service UUID
-        /// </summary>
-        /// <param name="serviceUuid">Service UUID</param>
-        /// <returns></returns>
-        public static async Task<BleDevice> ConnectByServiceUuidAsync(byte[] serviceUuid)
-        {
-            var discoverServiceCommand = new BleDiscoverServiceCommand();
-            var discoveredDevice = await discoverServiceCommand.ExecuteAsync(serviceUuid);
-
-            return await ConnectAsync(discoveredDevice.sender, (BleAddressType)discoveredDevice.address_type);
         }
 
         /// <summary>
@@ -104,18 +57,18 @@ namespace BGLibExt
         /// </summary>
         public async Task DisconnectAsync()
         {
-            var disconnectCommand = new BleDisconnectCommand();
-            await disconnectCommand.ExecuteAsync(_connectionHandle);
+            _bgLib.BLEEventATTClientAttributeValue -= OnClientAttributeValue;
+            _bgLib.BLEEventConnectionDisconnected -= OnDisconnected;
 
-            BleModuleConnection.Instance.BleProtocol.Lib.BLEEventATTClientAttributeValue -= OnClientAttributeValue;
-            BleModuleConnection.Instance.BleProtocol.Lib.BLEEventConnectionDisconnected -= OnDisconnected;
+            var disconnectCommand = new BleDisconnectCommand(_bgLib, _bleModuleConnection);
+            await disconnectCommand.ExecuteAsync(_connectionHandle);
 
             IsConnected = false;
         }
 
         private void OnClientAttributeValue(object sender, AttributeValueEventArgs e)
         {
-            if (e.connection == _connectionHandle)
+            if (e.connection == _connectionHandle && CharacteristicsByHandle.ContainsKey(e.atthandle))
             {
                 var characteristic = CharacteristicsByHandle[e.atthandle];
                 characteristic.TriggerCharacteristicValueChanged(e.value);
@@ -126,7 +79,7 @@ namespace BGLibExt
         {
             if (e.connection == _connectionHandle)
             {
-                BleModuleConnection.Instance.BleProtocol.Lib.BLEEventConnectionDisconnected -= OnDisconnected;
+                _bgLib.BLEEventConnectionDisconnected -= OnDisconnected;
                 var disconnectThread = new Thread((parameters) =>
                 {
                     var parameterArray = (object[])parameters;

@@ -1,4 +1,5 @@
-﻿using Bluegiga.BLE.Events.GAP;
+﻿using Bluegiga;
+using Bluegiga.BLE.Events.GAP;
 using System.IO.Ports;
 using System.Linq;
 using System.Threading;
@@ -8,13 +9,8 @@ namespace BGLibExt.BleCommands
 {
     internal class BleDiscoverManufacturerSpecificDataCommand : BleCommand
     {
-        public BleDiscoverManufacturerSpecificDataCommand()
-            : base(BleModuleConnection.Instance.BleProtocol, BleModuleConnection.Instance.SerialPort)
-        {
-        }
-
-        public BleDiscoverManufacturerSpecificDataCommand(BleProtocol ble, SerialPort port)
-            : base(ble, port)
+        public BleDiscoverManufacturerSpecificDataCommand(BGLib bgLib, BleModuleConnection bleModuleConnection)
+            : base(bgLib, bleModuleConnection)
         {
         }
 
@@ -42,21 +38,21 @@ namespace BGLibExt.BleCommands
 
                 try
                 {
-                    Ble.Lib.BLEEventGAPScanResponse += OnScanResponse;
+                    _bgLib.BLEEventGAPScanResponse += OnScanResponse;
 
                     using (cancellationTokenSource.Token.Register(() => taskCompletionSource.SetCanceled(), useSynchronizationContext: false))
                     {
-                        Ble.SendCommand(Port, Ble.Lib.BLECommandGAPSetScanParameters(0xC8, 0xC8, 1));
-                        Ble.SendCommand(Port, Ble.Lib.BLECommandGAPDiscover(1));
+                        _bgLib.SendCommand(_bleModuleConnection.SerialPort, _bgLib.BLECommandGAPSetScanParameters(0xC8, 0xC8, 1));
+                        _bgLib.SendCommand(_bleModuleConnection.SerialPort, _bgLib.BLECommandGAPDiscover(1));
 
                         return await taskCompletionSource.Task.ConfigureAwait(false);
                     }
                 }
                 finally
                 {
-                    Ble.SendCommand(Port, Ble.Lib.BLECommandGAPEndProcedure());
+                    _bgLib.SendCommand(_bleModuleConnection.SerialPort, _bgLib.BLECommandGAPEndProcedure());
 
-                    Ble.Lib.BLEEventGAPScanResponse -= OnScanResponse;
+                    _bgLib.BLEEventGAPScanResponse -= OnScanResponse;
                 }
             }
         }
