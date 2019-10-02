@@ -1,5 +1,7 @@
 ﻿using BGLibExt.BleCommands;
 using Bluegiga;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Threading.Tasks;
 
 namespace BGLibExt
@@ -8,11 +10,13 @@ namespace BGLibExt
     {
         private readonly BGLib _bgLib;
         private readonly BleModuleConnection _bleModuleConnection;
+        private readonly IServiceProvider _serviceProvider;
 
-        public BleDeviceFactory(BGLib bgLib, BleModuleConnection bleModuleConnection)
+        public BleDeviceFactory(BGLib bgLib, BleModuleConnection bleModuleConnection, IServiceProvider serviceProvider)
         {
             _bgLib = bgLib;
             _bleModuleConnection = bleModuleConnection;
+            _serviceProvider = serviceProvider;
         }
 
         /// <summary>
@@ -36,7 +40,7 @@ namespace BGLibExt
                 service.Attributes.AddRange(attributes);
             }
 
-            var bleDevice = new BleDevice(_bgLib, _bleModuleConnection, connectionStatus.connection, services);
+            var bleDevice = new BleDevice(_bgLib, _bleModuleConnection, connectionStatus.connection, services, (ILogger<BleDevice>)_serviceProvider.GetService(typeof(ILogger<BleDevice>)));
             return bleDevice;
         }
 

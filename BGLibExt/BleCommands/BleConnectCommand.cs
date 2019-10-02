@@ -1,7 +1,6 @@
 ﻿using Bluegiga;
 using Bluegiga.BLE.Events.Connection;
 using System;
-using System.IO.Ports;
 using System.Threading;
 using System.Threading.Tasks;
 

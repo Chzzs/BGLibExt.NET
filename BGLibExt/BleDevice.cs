@@ -2,6 +2,7 @@
 using Bluegiga;
 using Bluegiga.BLE.Events.ATTClient;
 using Bluegiga.BLE.Events.Connection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -22,7 +23,7 @@ namespace BGLibExt
         public Dictionary<ushort, BleCharacteristic> CharacteristicsByHandle { get; private set; } = new Dictionary<ushort, BleCharacteristic>();
         public List<BleService> Services { get; private set; }
 
-        internal BleDevice(BGLib bgLib, BleModuleConnection bleModuleConnection, byte connectionHandle, List<BleService> services)
+        internal BleDevice(BGLib bgLib, BleModuleConnection bleModuleConnection, byte connectionHandle, List<BleService> services, ILogger<BleDevice> logger)
         {
             _bgLib = bgLib;
             _bleModuleConnection = bleModuleConnection;

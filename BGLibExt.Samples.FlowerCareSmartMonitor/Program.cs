@@ -24,9 +24,10 @@ namespace BGLibExt.Samples.FlowerCareSmartMonitor
         static void Main(string[] args)
         {
             var servicesProvider = new ServiceCollection()
-                .AddLogging(configure => configure.AddConsole())
-                .AddTransient<BGLib, BGLibDebug>()
+                .AddLogging(configure => configure.AddConsole().SetMinimumLevel(LogLevel.Trace))
+                .AddSingleton<BGLib, BGLibDebug>()
                 .AddSingleton<BleModuleConnection>()
+                .AddTransient<BleDeviceFactory>()
                 .AddTransient<Program>()
                 .BuildServiceProvider();
             var program = servicesProvider.GetRequiredService<Program>();
