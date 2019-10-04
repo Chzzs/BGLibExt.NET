@@ -9,7 +9,7 @@ namespace Bluegiga
     {
         private readonly ILogger<BGLibDebug> _logger;
 
-        public BGLibDebug(ILogger<BGLibDebug> logger)
+        public BGLibDebug(ILogger<BGLibDebug> logger = null)
         {
             _logger = logger;
 
@@ -158,7 +158,7 @@ namespace Bluegiga
 
         public override UInt16 SendCommand(System.IO.Ports.SerialPort port, Byte[] cmd)
         {
-            _logger.LogTrace($"Send bglib command, Data={cmd.ByteArrayToHexString()}");
+            _logger?.LogTrace($"Send bglib command, Data={cmd.ToHexString()}");
 
             return base.SendCommand(port, cmd);
         }
@@ -172,14 +172,14 @@ namespace Bluegiga
                 var value = field.GetValue(e);
                 if (value is byte[])
                 {
-                    fields.Add($"{field.Name}={((byte[])value).ByteArrayToHexString()}");
+                    fields.Add($"{field.Name}={((byte[])value).ToHexString()}");
                 }
                 else
                 {
                     fields.Add($"{field.Name}={value}");
                 }
             }
-            _logger.LogTrace($"{type} triggered, {string.Join(", ", fields)}");
+            _logger?.LogTrace($"{type} triggered, {string.Join(", ", fields)}");
         }
     }
 }

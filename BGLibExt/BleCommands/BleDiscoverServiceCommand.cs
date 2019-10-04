@@ -1,5 +1,6 @@
 ﻿using Bluegiga;
 using Bluegiga.BLE.Events.GAP;
+using Microsoft.Extensions.Logging;
 using System.IO.Ports;
 using System.Linq;
 using System.Threading;
@@ -19,8 +20,8 @@ namespace BGLibExt.BleCommands
             BleAdvertisingDataType.CompleteListof128BitServiceClassUUIDs
         };
 
-        public BleDiscoverServiceCommand(BGLib bgLib, BleModuleConnection bleModuleConnection)
-            : base(bgLib, bleModuleConnection)
+        public BleDiscoverServiceCommand(BGLib bgLib, BleModuleConnection bleModuleConnection, ILogger logger)
+            : base(bgLib, bleModuleConnection, logger)
         {
         }
 
@@ -31,6 +32,8 @@ namespace BGLibExt.BleCommands
 
         public async Task<ScanResponseEventArgs> ExecuteAsync(byte[] serviceUuid, CancellationToken cancellationToken, int timeout = DefaultTimeout)
         {
+            Logger?.LogTrace($"Discover device by service Uuid {serviceUuid.ToHexString()}");
+
             var taskCompletionSource = new TaskCompletionSource<ScanResponseEventArgs>();
             using (var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
             {
@@ -47,21 +50,21 @@ namespace BGLibExt.BleCommands
 
                 try
                 {
-                    _bgLib.BLEEventGAPScanResponse += OnScanResponse;
+                    BgLib.BLEEventGAPScanResponse += OnScanResponse;
 
                     using (cancellationTokenSource.Token.Register(() => taskCompletionSource.SetCanceled(), useSynchronizationContext: false))
                     {
-                        _bgLib.SendCommand(_bleModuleConnection.SerialPort, _bgLib.BLECommandGAPSetScanParameters(0xC8, 0xC8, 1));
-                        _bgLib.SendCommand(_bleModuleConnection.SerialPort, _bgLib.BLECommandGAPDiscover(1));
+                        BgLib.SendCommand(BleModuleConnection.SerialPort, BgLib.BLECommandGAPSetScanParameters(0xC8, 0xC8, 1));
+                        BgLib.SendCommand(BleModuleConnection.SerialPort, BgLib.BLECommandGAPDiscover(1));
 
                         return await taskCompletionSource.Task.ConfigureAwait(continueOnCapturedContext: false);
                     }
                 }
                 finally
                 {
-                    _bgLib.SendCommand(_bleModuleConnection.SerialPort, _bgLib.BLECommandGAPEndProcedure());
+                    BgLib.SendCommand(BleModuleConnection.SerialPort, BgLib.BLECommandGAPEndProcedure());
 
-                    _bgLib.BLEEventGAPScanResponse -= OnScanResponse;
+                    BgLib.BLEEventGAPScanResponse -= OnScanResponse;
                 }
             }
         }

@@ -16,7 +16,7 @@ namespace BGLibExt
             Attributes = new List<BleAttribute>();
             Characteristics = new List<BleCharacteristic>();
 
-            Uuid = uuid.ToGuid();
+            Uuid = uuid.ToBleGuid();
             StartHandle = startHandle;
             EndHandle = endHandle;
         }

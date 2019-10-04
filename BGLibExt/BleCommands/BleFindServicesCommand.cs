@@ -1,5 +1,6 @@
 ﻿using Bluegiga;
 using Bluegiga.BLE.Events.ATTClient;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO.Ports;
@@ -15,8 +16,8 @@ namespace BGLibExt.BleCommands
         private const ushort GattMinHandle = 0x0001;
         private static readonly byte[] GattServiceTypePrimary = new byte[] { 0x00, 0x28 };
 
-        public BleFindServicesCommand(BGLib bgLib, BleModuleConnection bleModuleConnection)
-            : base(bgLib, bleModuleConnection)
+        public BleFindServicesCommand(BGLib bgLib, BleModuleConnection bleModuleConnection, ILogger logger)
+            : base(bgLib, bleModuleConnection, logger)
         {
         }
 
@@ -27,6 +28,8 @@ namespace BGLibExt.BleCommands
 
         public async Task<List<BleService>> ExecuteAsync(byte connection, CancellationToken cancellationToken, int timeout = DefaultTimeout)
         {
+            Logger?.LogTrace($"Find device services, Connection={connection}");
+
             var taskCompletionSource = new TaskCompletionSource<List<BleService>>();
             using (var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
             {
@@ -59,20 +62,20 @@ namespace BGLibExt.BleCommands
 
                 try
                 {
-                    _bgLib.BLEEventATTClientGroupFound += OnGroupFound;
-                    _bgLib.BLEEventATTClientProcedureCompleted += OnProcedureCompleted;
+                    BgLib.BLEEventATTClientGroupFound += OnGroupFound;
+                    BgLib.BLEEventATTClientProcedureCompleted += OnProcedureCompleted;
 
                     using (cancellationTokenSource.Token.Register(() => taskCompletionSource.SetCanceled(), useSynchronizationContext: false))
                     {
-                        _bgLib.SendCommand(_bleModuleConnection.SerialPort, _bgLib.BLECommandATTClientReadByGroupType(connection, GattMinHandle, GattMaxHandle, (byte[])GattServiceTypePrimary));
+                        BgLib.SendCommand(BleModuleConnection.SerialPort, BgLib.BLECommandATTClientReadByGroupType(connection, GattMinHandle, GattMaxHandle, (byte[])GattServiceTypePrimary));
 
                         return await taskCompletionSource.Task.ConfigureAwait(continueOnCapturedContext: false);
                     }
                 }
                 finally
                 {
-                    _bgLib.BLEEventATTClientGroupFound -= OnGroupFound;
-                    _bgLib.BLEEventATTClientProcedureCompleted -= OnProcedureCompleted;
+                    BgLib.BLEEventATTClientGroupFound -= OnGroupFound;
+                    BgLib.BLEEventATTClientProcedureCompleted -= OnProcedureCompleted;
                 }
             }
         }

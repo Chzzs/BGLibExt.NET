@@ -1,5 +1,6 @@
 ﻿using Bluegiga;
 using Bluegiga.BLE.Events.ATTClient;
+using Microsoft.Extensions.Logging;
 using System.IO.Ports;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,8 +9,8 @@ namespace BGLibExt.BleCommands
 {
     internal class BleWriteAttributeCommand : BleCommand
     {
-        public BleWriteAttributeCommand(BGLib bgLib, BleModuleConnection bleModuleConnection)
-            : base(bgLib, bleModuleConnection)
+        public BleWriteAttributeCommand(BGLib bgLib, BleModuleConnection bleModuleConnection, ILogger logger)
+            : base(bgLib, bleModuleConnection, logger)
         {
         }
 
@@ -20,6 +21,8 @@ namespace BGLibExt.BleCommands
 
         public async Task<ProcedureCompletedEventArgs> ExecuteAsync(byte connection, ushort attributeHandle, byte[] value, CancellationToken cancellationToken, int timeout = DefaultTimeout)
         {
+            Logger?.LogTrace($"Write device characteristic, Connection={connection}, AttributeHandle={attributeHandle}, Value={value.ToHexString()}");
+
             var taskCompletionSource = new TaskCompletionSource<ProcedureCompletedEventArgs>();
             using (var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
             {
@@ -35,18 +38,18 @@ namespace BGLibExt.BleCommands
 
                 try
                 {
-                    _bgLib.BLEEventATTClientProcedureCompleted += OnProcedureCompleted;
+                    BgLib.BLEEventATTClientProcedureCompleted += OnProcedureCompleted;
 
                     using (cancellationTokenSource.Token.Register(() => taskCompletionSource.SetCanceled(), useSynchronizationContext: false))
                     {
-                        _bgLib.SendCommand(_bleModuleConnection.SerialPort, _bgLib.BLECommandATTClientAttributeWrite(connection, attributeHandle, value));
+                        BgLib.SendCommand(BleModuleConnection.SerialPort, BgLib.BLECommandATTClientAttributeWrite(connection, attributeHandle, value));
 
                         return await taskCompletionSource.Task.ConfigureAwait(continueOnCapturedContext: false);
                     }
                 }
                 finally
                 {
-                    _bgLib.BLEEventATTClientProcedureCompleted -= OnProcedureCompleted;
+                    BgLib.BLEEventATTClientProcedureCompleted -= OnProcedureCompleted;
                 }
             }
         }

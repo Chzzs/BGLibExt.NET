@@ -1,5 +1,6 @@
 ﻿using BGLibExt.BleCommands;
 using Bluegiga;
+using Microsoft.Extensions.Logging;
 using System;
 using System.IO.Ports;
 using System.Threading.Tasks;
@@ -10,31 +11,32 @@ namespace BGLibExt
     {
         private readonly BGLib _bgLib;
         private readonly BleModuleConnection _bleModuleConnection;
+        private readonly ILogger _logger;
         private readonly byte _connection;
 
         public Guid Uuid { get; private set; }
         public ushort Handle { get; private set; }
-        public ushort HandleCCC { get; private set; }
-        public bool HasCCC { get; private set; }
+        public ushort HandleCcc { get; private set; }
+        public bool HasCcc { get; private set; }
 
         public event CharacteristicValueChangedEventHandler ValueChanged;
 
         public delegate void CharacteristicValueChangedEventHandler(object sender, BleCharacteristicValueChangedEventArgs e);
 
-        internal BleCharacteristic(BGLib bgLib, BleModuleConnection bleModuleConnection, byte connection, byte[] uuid, ushort handle)
+        internal BleCharacteristic(BGLib bgLib, BleModuleConnection bleModuleConnection, ILogger logger, byte connection, byte[] uuid, ushort handle)
         {
             _bgLib = bgLib;
             _bleModuleConnection = bleModuleConnection;
-
+            _logger = logger;
             _connection = connection;
-            Uuid = uuid.ToGuid();
+            Uuid = uuid.ToBleGuid();
             Handle = handle;
         }
 
-        internal void SetCCCHandle(ushort handle)
+        internal void SetCccHandle(ushort handle)
         {
-            HandleCCC = handle;
-            HasCCC = true;
+            HandleCcc = handle;
+            HasCcc = true;
         }
 
         /// <summary>
@@ -51,18 +53,18 @@ namespace BGLibExt
         /// Read client characteristic configuration
         /// </summary>
         /// <returns>Configuration value</returns>
-        public async Task<BleCCCValue> ReadClientCharacteristicConfigurationAsync()
+        public async Task<BleCccValue> ReadCccAsync()
         {
-            if (!HasCCC)
+            if (!HasCcc)
             {
                 throw new ArgumentException($"Client characteristic {Uuid} doesn't have a configuration attribute!");
             }
 
-            var rawValue = await ReadValueAsync(HandleCCC, false);
+            var rawValue = await ReadValueAsync(HandleCcc, false);
 
             using (var byteDeserializer = new ByteDeserializer(rawValue))
             {
-                var ccc = byteDeserializer.DeSerializeBleCCCValue();
+                var ccc = byteDeserializer.DeSerializeBleCccValue();
                 return ccc;
             }
         }
@@ -80,9 +82,9 @@ namespace BGLibExt
         /// Write client characteristic configuration
         /// </summary>
         /// <param name="value">Configuration value</param>
-        public async Task WriteClientCharacteristicConfigurationAsync(BleCCCValue value)
+        public async Task WriteCccAsync(BleCccValue value)
         {
-            if (!HasCCC)
+            if (!HasCcc)
             {
                 throw new ArgumentException($"Client characteristic {Uuid} doesn't have a configuration attribute!");
             }
@@ -90,19 +92,19 @@ namespace BGLibExt
             var byteSerializer = new ByteSerializer();
             byteSerializer.Serialize(value);
 
-            await WriteValueAsync(HandleCCC, byteSerializer.GetBuffer());
+            await WriteValueAsync(HandleCcc, byteSerializer.GetBuffer());
         }
 
         private async Task<byte[]> ReadValueAsync(ushort handle, bool readLongValue)
         {
-            var readAttributeCommand = new BleReadAttributeCommand(_bgLib, _bleModuleConnection);
+            var readAttributeCommand = new BleReadAttributeCommand(_bgLib, _bleModuleConnection, _logger);
             var (_, attributeValueEventArgs) = await readAttributeCommand.ExecuteAsync(_connection, handle, readLongValue);
             return attributeValueEventArgs.value;
         }
 
         private async Task WriteValueAsync(ushort handle, byte[] value)
         {
-            var writeAttributeCommand = new BleWriteAttributeCommand(_bgLib, _bleModuleConnection);
+            var writeAttributeCommand = new BleWriteAttributeCommand(_bgLib, _bleModuleConnection, _logger);
             await writeAttributeCommand.ExecuteAsync(_connection, handle, value);
         }
 

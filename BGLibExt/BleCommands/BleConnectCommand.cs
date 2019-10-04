@@ -1,5 +1,6 @@
 ﻿using Bluegiga;
 using Bluegiga.BLE.Events.Connection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,8 +9,8 @@ namespace BGLibExt.BleCommands
 {
     internal class BleConnectCommand : BleCommand
     {
-        public BleConnectCommand(BGLib bgLib, BleModuleConnection bleModuleConnection)
-            : base(bgLib, bleModuleConnection)
+        public BleConnectCommand(BGLib bgLib, BleModuleConnection bleModuleConnection, ILogger logger)
+            : base(bgLib, bleModuleConnection, logger)
         {
         }
 
@@ -20,6 +21,8 @@ namespace BGLibExt.BleCommands
 
         public async Task<StatusEventArgs> ExecuteAsync(byte[] address, BleAddressType addressType, CancellationToken cancellationToken, int timeout = DefaultTimeout)
         {
+            Logger?.LogTrace($"Connect to device, Address={address.ToHexString()}, AddressType={addressType}");
+
             var taskCompletionSource = new TaskCompletionSource<StatusEventArgs>();
             using (var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
             {
@@ -39,18 +42,18 @@ namespace BGLibExt.BleCommands
 
                 try
                 {
-                    _bgLib.BLEEventConnectionStatus += OnConnectionStatus;
+                    BgLib.BLEEventConnectionStatus += OnConnectionStatus;
 
                     using (cancellationTokenSource.Token.Register(() => taskCompletionSource.SetCanceled(), useSynchronizationContext: false))
                     {
-                        _bgLib.SendCommand(_bleModuleConnection.SerialPort, _bgLib.BLECommandGAPConnectDirect((byte[])address, (byte)addressType, 0x20, 0x30, 0x100, 0));
+                        BgLib.SendCommand(BleModuleConnection.SerialPort, BgLib.BLECommandGAPConnectDirect((byte[])address, (byte)addressType, 0x20, 0x30, 0x100, 0));
 
                         return await taskCompletionSource.Task.ConfigureAwait(continueOnCapturedContext: false);
                     }
                 }
                 finally
                 {
-                    _bgLib.BLEEventConnectionStatus -= OnConnectionStatus;
+                    BgLib.BLEEventConnectionStatus -= OnConnectionStatus;
                 }
             }
         }

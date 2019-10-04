@@ -1,4 +1,5 @@
 ﻿using Bluegiga;
+using Microsoft.Extensions.Logging;
 
 namespace BGLibExt.BleCommands
 {
@@ -6,13 +7,15 @@ namespace BGLibExt.BleCommands
     {
         protected const int DefaultTimeout = 10000;
 
-        protected BGLib _bgLib;
-        protected BleModuleConnection _bleModuleConnection;
+        protected BGLib BgLib;
+        protected BleModuleConnection BleModuleConnection;
+        protected readonly ILogger Logger;
 
-        protected BleCommand(BGLib bgLib, BleModuleConnection bleModuleConnection)
+        protected BleCommand(BGLib bgLib, BleModuleConnection bleModuleConnection, ILogger logger)
         {
-            _bgLib = bgLib;
-            _bleModuleConnection = bleModuleConnection;
+            BgLib = bgLib;
+            BleModuleConnection = bleModuleConnection;
+            Logger = logger;
         }
     }
 }

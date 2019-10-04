@@ -14,6 +14,7 @@ namespace BGLibExt
     {
         private readonly BGLib _bgLib;
         private readonly BleModuleConnection _bleModuleConnection;
+        private readonly ILogger _logger;
         private readonly byte _connectionHandle;
 
         public event DisconnectedEventHandler Disconnected;
@@ -23,10 +24,11 @@ namespace BGLibExt
         public Dictionary<ushort, BleCharacteristic> CharacteristicsByHandle { get; private set; } = new Dictionary<ushort, BleCharacteristic>();
         public List<BleService> Services { get; private set; }
 
-        internal BleDevice(BGLib bgLib, BleModuleConnection bleModuleConnection, byte connectionHandle, List<BleService> services, ILogger<BleDevice> logger)
+        internal BleDevice(BGLib bgLib, BleModuleConnection bleModuleConnection, ILogger logger, byte connectionHandle, List<BleService> services)
         {
             _bgLib = bgLib;
             _bleModuleConnection = bleModuleConnection;
+            _logger = logger;
             _connectionHandle = connectionHandle;
 
             Services = services;
@@ -61,7 +63,7 @@ namespace BGLibExt
             _bgLib.BLEEventATTClientAttributeValue -= OnClientAttributeValue;
             _bgLib.BLEEventConnectionDisconnected -= OnDisconnected;
 
-            var disconnectCommand = new BleDisconnectCommand(_bgLib, _bleModuleConnection);
+            var disconnectCommand = new BleDisconnectCommand(_bgLib, _bleModuleConnection, _logger);
             await disconnectCommand.ExecuteAsync(_connectionHandle);
 
             IsConnected = false;

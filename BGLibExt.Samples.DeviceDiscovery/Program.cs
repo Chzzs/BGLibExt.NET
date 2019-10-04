@@ -11,13 +11,11 @@ namespace BGLibExt.Samples.DeviceDiscovery
     {
         private readonly BleModuleConnection _bleModuleConnection;
         private readonly BleDeviceDiscovery _bleDeviceDiscovery;
-        private readonly ILogger<Program> _logger;
 
-        public Program(BleModuleConnection bleModuleConnection, BleDeviceDiscovery bleDeviceDiscovery, ILogger<Program> logger)
+        public Program(BleModuleConnection bleModuleConnection, BleDeviceDiscovery bleDeviceDiscovery)
         {
             _bleModuleConnection = bleModuleConnection;
             _bleDeviceDiscovery = bleDeviceDiscovery;
-            _logger = logger;
         }
 
         static void Main(string[] args)
@@ -40,15 +38,13 @@ namespace BGLibExt.Samples.DeviceDiscovery
 
             _bleDeviceDiscovery.ScanResponse += (sender, args) =>
             {
-                _logger.LogInformation($"Device discovered, Address={args.Address.ByteArrayToHexString()}, AddressType={args.AddressType}, Rssi={args.Rssi}, PacketType={args.PacketType}, Bond={args.Bond}, ParsedData={string.Join(";", args.ParsedData.Select(x => $"{x.Type}={x.ToDebugString()}"))}");
+                Console.WriteLine($"Device discovered, Address={args.Address.ToHexString()}, Data={args.Data.ToHexString()}, ParsedData={string.Join(";", args.ParsedData.Select(x => $"{x.Type}={x.ToDebugString()}"))}");
             };
 
-            _logger.LogInformation("Start device discovery");
             _bleDeviceDiscovery.StartDeviceDiscovery();
 
             await Task.Delay(10000);
 
-            _logger.LogInformation("Stop device discovery");
             _bleDeviceDiscovery.StopDeviceDiscovery();
 
             _bleModuleConnection.Stop();

@@ -10,13 +10,13 @@ namespace BGLibExt
     {
         private readonly BGLib _bgLib;
         private readonly BleModuleConnection _bleModuleConnection;
-        private readonly IServiceProvider _serviceProvider;
+        private readonly ILogger<BleDevice> _logger;
 
-        public BleDeviceFactory(BGLib bgLib, BleModuleConnection bleModuleConnection, IServiceProvider serviceProvider)
+        public BleDeviceFactory(BGLib bgLib, BleModuleConnection bleModuleConnection, ILogger<BleDevice> logger = null)
         {
             _bgLib = bgLib;
             _bleModuleConnection = bleModuleConnection;
-            _serviceProvider = serviceProvider;
+            _logger = logger;
         }
 
         /// <summary>
@@ -27,20 +27,27 @@ namespace BGLibExt
         /// <returns></returns>
         public async Task<BleDevice> ConnectAsync(byte[] address, BleAddressType addressType)
         {
-            var connectCommand = new BleConnectCommand(_bgLib, _bleModuleConnection);
+            var connectCommand = new BleConnectCommand(_bgLib, _bleModuleConnection, _logger);
             var connectionStatus = await connectCommand.ExecuteAsync(address, addressType);
 
-            var findServicesCommand = new BleFindServicesCommand(_bgLib, _bleModuleConnection);
-            var findCharacteristicsCommand = new BleFindCharacteristicsCommand(_bgLib, _bleModuleConnection);
+            var findServicesCommand = new BleFindServicesCommand(_bgLib, _bleModuleConnection, _logger);
+            var findCharacteristicsCommand = new BleFindCharacteristicsCommand(_bgLib, _bleModuleConnection, _logger);
             var services = await findServicesCommand.ExecuteAsync(connectionStatus.connection);
             foreach (var service in services)
             {
+                _logger?.LogTrace($"Service found Uuid={service.Uuid}");
+
                 var (characteristics, attributes) = await findCharacteristicsCommand.ExecuteAsync(connectionStatus.connection, service.StartHandle, service.EndHandle);
                 service.Characteristics.AddRange(characteristics);
                 service.Attributes.AddRange(attributes);
+
+                foreach (var characteristic in service.Characteristics)
+                {
+                    _logger?.LogTrace($"Characteristic found, Uuid={characteristic.Uuid}, Handle={characteristic.Handle}, HasCcc={characteristic.HasCcc}");
+                }
             }
 
-            var bleDevice = new BleDevice(_bgLib, _bleModuleConnection, connectionStatus.connection, services, (ILogger<BleDevice>)_serviceProvider.GetService(typeof(ILogger<BleDevice>)));
+            var bleDevice = new BleDevice(_bgLib, _bleModuleConnection, _logger, connectionStatus.connection, services);
             return bleDevice;
         }
 
@@ -51,7 +58,7 @@ namespace BGLibExt
         /// <returns></returns>
         public async Task<BleDevice> ConnectByManufacturerIdAsync(ushort manufacturerId)
         {
-            var discoverManufacturerSpecificDataCommand = new BleDiscoverManufacturerSpecificDataCommand(_bgLib, _bleModuleConnection);
+            var discoverManufacturerSpecificDataCommand = new BleDiscoverManufacturerSpecificDataCommand(_bgLib, _bleModuleConnection, _logger);
             var discoveredDevice = await discoverManufacturerSpecificDataCommand.ExecuteAsync(manufacturerId);
 
             return await ConnectAsync(discoveredDevice.sender, (BleAddressType)discoveredDevice.address_type);
@@ -64,7 +71,7 @@ namespace BGLibExt
         /// <returns></returns>
         public async Task<BleDevice> ConnectByServiceUuidAsync(byte[] serviceUuid)
         {
-            var discoverServiceCommand = new BleDiscoverServiceCommand(_bgLib, _bleModuleConnection);
+            var discoverServiceCommand = new BleDiscoverServiceCommand(_bgLib, _bleModuleConnection, _logger);
             var discoveredDevice = await discoverServiceCommand.ExecuteAsync(serviceUuid);
 
             return await ConnectAsync(discoveredDevice.sender, (BleAddressType)discoveredDevice.address_type);

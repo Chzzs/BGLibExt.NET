@@ -1,5 +1,7 @@
 ﻿using Bluegiga;
 using Bluegiga.BLE.Events.GAP;
+using Microsoft.Extensions.Logging;
+using System.Linq;
 
 namespace BGLibExt
 {
@@ -7,15 +9,17 @@ namespace BGLibExt
     {
         private readonly BGLib _bgLib;
         private readonly BleModuleConnection _bleModuleConnection;
+        private readonly ILogger<BleDeviceDiscovery> _logger;
 
         public event ScanResponseReceivedEventHandler ScanResponse;
 
         public delegate void ScanResponseReceivedEventHandler(object sender, BleScanResponseReceivedEventArgs e);
 
-        public BleDeviceDiscovery(BGLib bgLib, BleModuleConnection bleModuleConnection)
+        public BleDeviceDiscovery(BGLib bgLib, BleModuleConnection bleModuleConnection, ILogger<BleDeviceDiscovery> logger = null)
         {
             _bgLib = bgLib;
             _bleModuleConnection = bleModuleConnection;
+            _logger = logger;
         }
 
         /// <summary>
@@ -23,6 +27,8 @@ namespace BGLibExt
         /// </summary>
         public void StartDeviceDiscovery()
         {
+            _logger?.LogTrace("Start device discovery");
+
             _bgLib.BLEEventGAPScanResponse += OnScanResponse;
 
             _bgLib.SendCommand(_bleModuleConnection.SerialPort, _bgLib.BLECommandGAPSetScanParameters(0xC8, 0xC8, 1));
@@ -34,6 +40,8 @@ namespace BGLibExt
         /// </summary>
         public void StopDeviceDiscovery()
         {
+            _logger?.LogTrace("Stop device discovery");
+
             _bgLib.SendCommand(_bleModuleConnection.SerialPort, _bgLib.BLECommandGAPEndProcedure());
 
             _bgLib.BLEEventGAPScanResponse -= OnScanResponse;

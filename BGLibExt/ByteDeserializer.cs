@@ -12,9 +12,9 @@ namespace BGLibExt
             _buffer = new MemoryStream((byte[])buf);
         }
 
-        public BleCCCValue DeSerializeBleCCCValue()
+        public BleCccValue DeSerializeBleCccValue()
         {
-            return (BleCCCValue)DeSerializeUshort();
+            return (BleCccValue)DeSerializeUshort();
         }
 
         public bool DeSerializeBool()

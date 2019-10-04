@@ -1,5 +1,6 @@
 ﻿using Bluegiga;
 using Bluegiga.BLE.Events.ATTClient;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO.Ports;
@@ -11,8 +12,8 @@ namespace BGLibExt.BleCommands
 {
     internal class BleFindCharacteristicsCommand : BleCommand
     {
-        public BleFindCharacteristicsCommand(BGLib bgLib, BleModuleConnection bleModuleConnection)
-            : base(bgLib, bleModuleConnection)
+        public BleFindCharacteristicsCommand(BGLib bgLib, BleModuleConnection bleModuleConnection, ILogger logger)
+            : base(bgLib, bleModuleConnection, logger)
         {
         }
 
@@ -23,6 +24,8 @@ namespace BGLibExt.BleCommands
 
         public async Task<(List<BleCharacteristic>, List<BleAttribute>)> ExecuteAsync(byte connection, ushort startHandle, ushort endHandle, CancellationToken cancellationToken, int timeout = DefaultTimeout)
         {
+            Logger?.LogTrace($"Find device characteristics, Connection={connection}, StartHandle={startHandle}, EndHandle={endHandle}");
+
             var taskCompletionSource = new TaskCompletionSource<(List<BleCharacteristic>, List<BleAttribute>)>();
             using (var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
             {
@@ -56,20 +59,20 @@ namespace BGLibExt.BleCommands
 
                 try
                 {
-                    _bgLib.BLEEventATTClientFindInformationFound += OnFindInformationFound;
-                    _bgLib.BLEEventATTClientProcedureCompleted += OnProcedureCompleted;
+                    BgLib.BLEEventATTClientFindInformationFound += OnFindInformationFound;
+                    BgLib.BLEEventATTClientProcedureCompleted += OnProcedureCompleted;
 
                     using (cancellationTokenSource.Token.Register(() => taskCompletionSource.SetCanceled(), useSynchronizationContext: false))
                     {
-                        _bgLib.SendCommand(_bleModuleConnection.SerialPort, _bgLib.BLECommandATTClientFindInformation(connection, startHandle, endHandle));
+                        BgLib.SendCommand(BleModuleConnection.SerialPort, BgLib.BLECommandATTClientFindInformation(connection, startHandle, endHandle));
 
                         return await taskCompletionSource.Task.ConfigureAwait(continueOnCapturedContext: false);
                     }
                 }
                 finally
                 {
-                    _bgLib.BLEEventATTClientFindInformationFound -= OnFindInformationFound;
-                    _bgLib.BLEEventATTClientProcedureCompleted -= OnProcedureCompleted;
+                    BgLib.BLEEventATTClientFindInformationFound -= OnFindInformationFound;
+                    BgLib.BLEEventATTClientProcedureCompleted -= OnProcedureCompleted;
                 }
             }
         }
@@ -106,14 +109,14 @@ namespace BGLibExt.BleCommands
                 else if (attr.AttributeUuid.SequenceEqual(BleAttribute.CharacteristicCccUuid))
                 {
                     // add ccc capabilities to characteristic
-                    current.SetCCCHandle(attr.Handle);
+                    current.SetCccHandle(attr.Handle);
                 }
                 else
                 {
                     // if new characteristic begins - create it else skip and do nothing
                     if (createCharacteristic)
                     {
-                        current = new BleCharacteristic(_bgLib, _bleModuleConnection, attr.Connection, attr.AttributeUuid, attr.Handle);
+                        current = new BleCharacteristic(BgLib, BleModuleConnection, Logger, attr.Connection, attr.AttributeUuid, attr.Handle);
                         createCharacteristic = false;
 
                         characteristics.Add(current);

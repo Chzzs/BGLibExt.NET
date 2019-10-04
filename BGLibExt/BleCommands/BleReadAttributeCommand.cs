@@ -1,5 +1,6 @@
 ﻿using Bluegiga;
 using Bluegiga.BLE.Events.ATTClient;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO.Ports;
@@ -10,8 +11,8 @@ namespace BGLibExt.BleCommands
 {
     internal class BleReadAttributeCommand : BleCommand
     {
-        public BleReadAttributeCommand(BGLib bgLib, BleModuleConnection bleModuleConnection)
-            : base(bgLib, bleModuleConnection)
+        public BleReadAttributeCommand(BGLib bgLib, BleModuleConnection bleModuleConnection, ILogger logger)
+            : base(bgLib, bleModuleConnection, logger)
         {
         }
 
@@ -34,6 +35,8 @@ namespace BGLibExt.BleCommands
 
         private async Task<(ProcedureCompletedEventArgs, AttributeValueEventArgs)> ReadByHandle(byte connection, ushort attributeHandle, CancellationToken cancellationToken, int timeout = DefaultTimeout)
         {
+            Logger?.LogTrace($"Read device characteristic, Connection={connection}, AttributeHandle={attributeHandle}");
+
             var taskCompletionSource = new TaskCompletionSource<(ProcedureCompletedEventArgs, AttributeValueEventArgs)>();
             using (var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
             {
@@ -49,24 +52,26 @@ namespace BGLibExt.BleCommands
 
                 try
                 {
-                    _bgLib.BLEEventATTClientAttributeValue += OnAttributeValue;
+                    BgLib.BLEEventATTClientAttributeValue += OnAttributeValue;
 
                     using (cancellationTokenSource.Token.Register(() => taskCompletionSource.SetCanceled(), useSynchronizationContext: false))
                     {
-                        _bgLib.SendCommand(_bleModuleConnection.SerialPort, _bgLib.BLECommandATTClientReadByHandle(connection, attributeHandle));
+                        BgLib.SendCommand(BleModuleConnection.SerialPort, BgLib.BLECommandATTClientReadByHandle(connection, attributeHandle));
 
                         return await taskCompletionSource.Task.ConfigureAwait(continueOnCapturedContext: false);
                     }
                 }
                 finally
                 {
-                    _bgLib.BLEEventATTClientAttributeValue -= OnAttributeValue;
+                    BgLib.BLEEventATTClientAttributeValue -= OnAttributeValue;
                 }
             }
         }
 
         private async Task<(ProcedureCompletedEventArgs, AttributeValueEventArgs)> ReadLong(byte connection, ushort attributeHandle, CancellationToken cancellationToken, int timeout = DefaultTimeout)
         {
+            Logger?.LogTrace($"Read long device characteristic, Connection={connection}, AttributeHandle={attributeHandle}");
+
             var taskCompletionSource = new TaskCompletionSource<(ProcedureCompletedEventArgs, AttributeValueEventArgs)>();
             using (var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
             {
@@ -101,20 +106,20 @@ namespace BGLibExt.BleCommands
 
                 try
                 {
-                    _bgLib.BLEEventATTClientAttributeValue += OnAttributeValue;
-                    _bgLib.BLEEventATTClientProcedureCompleted += OnProcedureCompleted;
+                    BgLib.BLEEventATTClientAttributeValue += OnAttributeValue;
+                    BgLib.BLEEventATTClientProcedureCompleted += OnProcedureCompleted;
 
                     using (cancellationTokenSource.Token.Register(() => taskCompletionSource.SetCanceled(), useSynchronizationContext: false))
                     {
-                        _bgLib.SendCommand(_bleModuleConnection.SerialPort, _bgLib.BLECommandATTClientReadLong(connection, attributeHandle));
+                        BgLib.SendCommand(BleModuleConnection.SerialPort, BgLib.BLECommandATTClientReadLong(connection, attributeHandle));
 
                         return await taskCompletionSource.Task.ConfigureAwait(continueOnCapturedContext: false);
                     }
                 }
                 finally
                 {
-                    _bgLib.BLEEventATTClientAttributeValue -= OnAttributeValue;
-                    _bgLib.BLEEventATTClientProcedureCompleted -= OnProcedureCompleted;
+                    BgLib.BLEEventATTClientAttributeValue -= OnAttributeValue;
+                    BgLib.BLEEventATTClientProcedureCompleted -= OnProcedureCompleted;
                 }
             }
         }
