@@ -16,12 +16,6 @@ namespace BGLibExt.BleBlocks
         {
             var disconnect = Ble.Lib.BLECommandConnectionDisconnect(Connection);
             Ble.SendCommand(Port, disconnect);
-
-            var stopScan = Ble.Lib.BLECommandGAPEndProcedure();
-            Ble.SendCommand(Port, stopScan);
-
-            var stopAdvertise = Ble.Lib.BLECommandGAPSetMode(0, 0);
-            Ble.SendCommand(Port, stopAdvertise);
         }
     }
 }

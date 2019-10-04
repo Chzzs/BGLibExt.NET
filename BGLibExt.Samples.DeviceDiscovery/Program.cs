@@ -19,7 +19,7 @@ namespace BGLibExt.Samples.DeviceDiscovery
         {
             _bleConnection.ScanResponse += (sender, args) =>
             {
-                Console.WriteLine($"Device discovered, Address={args.Address.ByteArrayToHexString()}, AddressType={args.AddressType}, Rssi={args.Rssi}, PacketType={args.PacketType}, Bond={args.Bond}, ParsedData={string.Join(";", args.ParsedData.Select(x => $"{x.Type}={x.ToDebugString()}"))}");
+                Console.WriteLine($"Device discovered, Address={args.Address.ToHexString()}, AddressType={args.AddressType}, Rssi={args.Rssi}, PacketType={args.PacketType}, Bond={args.Bond}, ParsedData={string.Join(";", args.ParsedData.Select(x => $"{x.Type}={x.ToDebugString()}"))}");
             };
 
             Console.WriteLine("Start device discovery");

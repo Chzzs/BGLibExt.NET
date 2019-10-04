@@ -19,7 +19,7 @@ namespace BGLibExt
                     _characteristicsMap = new Dictionary<Guid, BlePeripheralCharacteristic>();
 
                     Services.ForEach(x => x.Characteristics.ForEach(characteristic =>
-                        _characteristicsMap.Add(characteristic.AttributeUuid.ToGuid(), characteristic)));
+                        _characteristicsMap.Add(characteristic.AttributeUuid.ToBleGuid(), characteristic)));
                 }
                 return _characteristicsMap;
             }
@@ -52,7 +52,7 @@ namespace BGLibExt
 
         public BlePeripheralCharacteristic FindCharacteristicByUuid(byte[] uuid)
         {
-            return CharacteristicMap[uuid.ToGuid()];
+            return CharacteristicMap[uuid.ToBleGuid()];
         }
     }
 }

@@ -115,6 +115,9 @@ namespace BGLibExt
         /// </summary>
         public void Disconnect()
         {
+            _bleProtocol.Lib.BLEEventATTClientAttributeValue -= OnClientAttributeValue;
+            _bleProtocol.Lib.BLEEventConnectionDisconnected -= OnDisconnected;
+
             var disconnectBlock = new BleDisconnectFromService(_bleProtocol, _serialPort, _connectionHandle);
             disconnectBlock.Execute();
 

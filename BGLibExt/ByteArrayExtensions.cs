@@ -5,28 +5,28 @@ namespace BGLibExt
 {
     public static class ByteArrayExtensions
     {
-        public static string ByteArrayToHexString(this byte[] value)
+        public static string ToHexString(this byte[] value)
         {
             var hex = BitConverter.ToString(value);
             return hex.Replace("-", "");
         }
 
-        public static Guid ToGuid(this byte[] value)
+        public static Guid ToBleGuid(this byte[] value)
         {
             if (value.Length == 16)
             {
-                return value.ToGuidInternal();
+                return value.ToBleGuidInternal();
             }
             else
             {
                 var baseGuid = new Guid("00000000-0000-1000-8000-00805F9B34FB").ToUuidByteArray().ToList();
                 baseGuid.RemoveRange(12, value.Length);
                 baseGuid.InsertRange(12, value);
-                return baseGuid.ToArray().ToGuidInternal();
+                return baseGuid.ToArray().ToBleGuidInternal();
             }
         }
 
-        private static Guid ToGuidInternal(this byte[] value)
+        private static Guid ToBleGuidInternal(this byte[] value)
         {
             var guidBytes = value.ToArray().Reverse().ToArray();
             Array.Reverse(guidBytes, 0, 4);

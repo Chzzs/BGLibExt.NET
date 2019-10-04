@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BGLibExt;
+using System;
+using System.Collections.Generic;
 
 namespace Bluegiga
 {
@@ -6,9 +8,21 @@ namespace Bluegiga
     {
         private void Print(object e)
         {
-            var t = e.GetType();
-            var now = DateTime.Now;
-            Console.WriteLine($"{now} - {t} triggered");
+            var type = e.GetType();
+            var fields = new List<string>();
+            foreach (var field in type.GetFields())
+            {
+                var value = field.GetValue(e);
+                if (value is byte[])
+                {
+                    fields.Add($"{field.Name}={((byte[])value).ToHexString()}");
+                }
+                else
+                {
+                    fields.Add($"{field.Name}={value}");
+                }
+            }
+            Console.WriteLine($"{type} triggered, {string.Join(", ", fields)}");
         }
 
         public BGLibDebug()
@@ -140,7 +154,7 @@ namespace Bluegiga
             BLEEventATTClientGroupFound += (sender, e) => Print(e);
             BLEEventATTClientAttributeFound += (sender, e) => Print(e);
             BLEEventATTClientFindInformationFound += (sender, e) => Print(e);
-            BLEEventATTClientAttributeValue += (sender, e) => Console.WriteLine(e.atthandle);
+            BLEEventATTClientAttributeValue += (sender, e) => Print(e);
             BLEEventATTClientReadMultipleResponse += (sender, e) => Print(e);
             BLEEventSMSMPData += (sender, e) => Print(e);
             BLEEventSMBondingFail += (sender, e) => Print(e);

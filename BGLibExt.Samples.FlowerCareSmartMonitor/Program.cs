@@ -24,17 +24,17 @@ namespace BGLibExt.Samples.FlowerCareSmartMonitor
             Console.WriteLine("Device services and characteristics");
             foreach (var service in flowerCareSmartMonitor.Services)
             {
-                Console.WriteLine($"Service Uuid={service.ServiceUuid.ToGuid()}");
+                Console.WriteLine($"Service Uuid={service.ServiceUuid.ToBleGuid()}");
 
                 foreach (var characteristic in service.Characteristics)
                 {
-                    Console.WriteLine($"Characteristic Uuid={characteristic.AttributeUuid.ToGuid()}, Handle={characteristic.Handle}, HasCCC={characteristic.HasCCC}");
+                    Console.WriteLine($"Characteristic Uuid={characteristic.AttributeUuid.ToBleGuid()}, Handle={characteristic.Handle}, HasCCC={characteristic.HasCCC}");
                 }
             }
 
             Console.WriteLine();
             Console.WriteLine("Read device status");
-            var status = _bleConnection.ReadCharacteristic(new Guid("00001a02-0000-1000-8000-00805f9b34fb").ToUuidByteArray(), true);
+            var status = _bleConnection.ReadCharacteristic(new Guid("00001a02-0000-1000-8000-00805f9b34fb").ToUuidByteArray(), false);
             var batteryLevel = status[0];
             var firmwareVersion = Encoding.ASCII.GetString(status.Skip(2).ToArray()).TrimEnd(new char[] { (char)0 });
             Console.WriteLine($"Battery level: {batteryLevel}%");
@@ -43,7 +43,7 @@ namespace BGLibExt.Samples.FlowerCareSmartMonitor
             Console.WriteLine();
             Console.WriteLine("Read device sensor data");
             _bleConnection.WriteCharacteristic(new Guid("00001a00-0000-1000-8000-00805f9b34fb").ToUuidByteArray(), new byte[] { 0xa0, 0x1f });
-            var sensorData = _bleConnection.ReadCharacteristic(new Guid("00001a01-0000-1000-8000-00805f9b34fb").ToUuidByteArray(), true);
+            var sensorData = _bleConnection.ReadCharacteristic(new Guid("00001a01-0000-1000-8000-00805f9b34fb").ToUuidByteArray(), false);
             var temperature = BitConverter.ToInt16(sensorData.Take(2).ToArray(), 0) / 10f;
             var lightIntensity = BitConverter.ToInt32(sensorData.Skip(3).Take(4).ToArray(), 0);
             var soilMoisture = sensorData[7];

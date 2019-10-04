@@ -58,7 +58,7 @@ namespace BGLibExt
 
         public string ToHexString()
         {
-            return Data.ByteArrayToHexString();
+            return Data.ToHexString();
         }
 
         public ushort ToUint16()
