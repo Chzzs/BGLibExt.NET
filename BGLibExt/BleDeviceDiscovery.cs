@@ -27,7 +27,7 @@ namespace BGLibExt
         /// </summary>
         public void StartDeviceDiscovery()
         {
-            _logger?.LogTrace("Start device discovery");
+            _logger?.LogDebug("Start device discovery");
 
             _bgLib.BLEEventGAPScanResponse += OnScanResponse;
 
@@ -40,7 +40,7 @@ namespace BGLibExt
         /// </summary>
         public void StopDeviceDiscovery()
         {
-            _logger?.LogTrace("Stop device discovery");
+            _logger?.LogDebug("Stop device discovery");
 
             _bgLib.SendCommand(_bleModuleConnection.SerialPort, _bgLib.BLECommandGAPEndProcedure());
 

@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace BGLibExt
 {
-    public class BleDeviceFactory
+    public class BleDeviceManager
     {
         private readonly BGLib _bgLib;
         private readonly BleModuleConnection _bleModuleConnection;
         private readonly ILogger<BleDevice> _logger;
 
-        public BleDeviceFactory(BGLib bgLib, BleModuleConnection bleModuleConnection, ILogger<BleDevice> logger = null)
+        public BleDeviceManager(BGLib bgLib, BleModuleConnection bleModuleConnection, ILogger<BleDevice> logger = null)
         {
             _bgLib = bgLib;
             _bleModuleConnection = bleModuleConnection;
@@ -35,7 +35,7 @@ namespace BGLibExt
             var services = await findServicesCommand.ExecuteAsync(connectionStatus.connection);
             foreach (var service in services)
             {
-                _logger?.LogTrace($"Service found Uuid={service.Uuid}");
+                _logger?.LogDebug($"Service found Uuid={service.Uuid}");
 
                 var (characteristics, attributes) = await findCharacteristicsCommand.ExecuteAsync(connectionStatus.connection, service.StartHandle, service.EndHandle);
                 service.Characteristics.AddRange(characteristics);
@@ -43,7 +43,7 @@ namespace BGLibExt
 
                 foreach (var characteristic in service.Characteristics)
                 {
-                    _logger?.LogTrace($"Characteristic found, Uuid={characteristic.Uuid}, Handle={characteristic.Handle}, HasCcc={characteristic.HasCcc}");
+                    _logger?.LogDebug($"Characteristic found, Uuid={characteristic.Uuid}, Handle={characteristic.Handle}, HasCcc={characteristic.HasCcc}");
                 }
             }
 

@@ -21,7 +21,7 @@ namespace BGLibExt.BleCommands
 
         public async Task<ProcedureCompletedEventArgs> ExecuteAsync(byte connection, ushort attributeHandle, byte[] value, CancellationToken cancellationToken, int timeout = DefaultTimeout)
         {
-            Logger?.LogTrace($"Write device characteristic, Connection={connection}, AttributeHandle={attributeHandle}, Value={value.ToHexString()}");
+            Logger?.LogDebug($"Write device characteristic, Connection={connection}, AttributeHandle={attributeHandle}, Value={value.ToHexString()}");
 
             var taskCompletionSource = new TaskCompletionSource<ProcedureCompletedEventArgs>();
             using (var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))

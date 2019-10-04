@@ -32,7 +32,7 @@ namespace BGLibExt.BleCommands
 
         public async Task<ScanResponseEventArgs> ExecuteAsync(byte[] serviceUuid, CancellationToken cancellationToken, int timeout = DefaultTimeout)
         {
-            Logger?.LogTrace($"Discover device by service Uuid {serviceUuid.ToHexString()}");
+            Logger?.LogDebug($"Discover device by service Uuid {serviceUuid.ToHexString()}");
 
             var taskCompletionSource = new TaskCompletionSource<ScanResponseEventArgs>();
             using (var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))

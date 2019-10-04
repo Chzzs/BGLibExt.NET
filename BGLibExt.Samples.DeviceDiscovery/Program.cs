@@ -11,17 +11,19 @@ namespace BGLibExt.Samples.DeviceDiscovery
     {
         private readonly BleModuleConnection _bleModuleConnection;
         private readonly BleDeviceDiscovery _bleDeviceDiscovery;
+        private readonly ILogger<Program> _logger;
 
-        public Program(BleModuleConnection bleModuleConnection, BleDeviceDiscovery bleDeviceDiscovery)
+        public Program(BleModuleConnection bleModuleConnection, BleDeviceDiscovery bleDeviceDiscovery, ILogger<Program> logger = null)
         {
             _bleModuleConnection = bleModuleConnection;
             _bleDeviceDiscovery = bleDeviceDiscovery;
+            _logger = logger;
         }
 
         static void Main(string[] args)
         {
             var servicesProvider = new ServiceCollection()
-                .AddLogging(configure => configure.AddConsole().SetMinimumLevel(LogLevel.Trace))
+                .AddLogging(configure => configure.AddConsole().SetMinimumLevel(LogLevel.Debug))
                 .AddSingleton<BGLib, BGLibDebug>()
                 .AddSingleton<BleModuleConnection>()
                 .AddTransient<BleDeviceDiscovery>()
@@ -38,7 +40,7 @@ namespace BGLibExt.Samples.DeviceDiscovery
 
             _bleDeviceDiscovery.ScanResponse += (sender, args) =>
             {
-                Console.WriteLine($"Device discovered, Address={args.Address.ToHexString()}, Data={args.Data.ToHexString()}, ParsedData={string.Join(";", args.ParsedData.Select(x => $"{x.Type}={x.ToDebugString()}"))}");
+                _logger?.LogInformation($"Device discovered, Address={args.Address.ToHexString()}, Data={args.Data.ToHexString()}, ParsedData={string.Join(";", args.ParsedData.Select(x => $"{x.Type}={x.ToDebugString()}"))}");
             };
 
             _bleDeviceDiscovery.StartDeviceDiscovery();

@@ -11,21 +11,23 @@ namespace BGLibExt.Samples.MiTemperatureHumidityMonitor
     class Program
     {
         private readonly BleModuleConnection _bleModuleConnection;
-        private readonly BleDeviceFactory _bleDeviceFactory;
+        private readonly BleDeviceManager _bleDeviceFactory;
+        private readonly ILogger<Program> _logger;
 
-        public Program(BleModuleConnection bleModuleConnection, BleDeviceFactory bleDeviceFactory)
+        public Program(BleModuleConnection bleModuleConnection, BleDeviceManager bleDeviceFactory, ILogger<Program> logger = null)
         {
             _bleModuleConnection = bleModuleConnection;
             _bleDeviceFactory = bleDeviceFactory;
+            _logger = logger;
         }
 
         static void Main(string[] args)
         {
             var servicesProvider = new ServiceCollection()
-                .AddLogging(configure => configure.AddConsole().SetMinimumLevel(LogLevel.Trace))
+                .AddLogging(configure => configure.AddConsole().SetMinimumLevel(LogLevel.Debug))
                 .AddSingleton<BGLib, BGLibDebug>()
                 .AddSingleton<BleModuleConnection>()
-                .AddTransient<BleDeviceFactory>()
+                .AddTransient<BleDeviceManager>()
                 .AddTransient<Program>()
                 .BuildServiceProvider();
             var program = servicesProvider.GetRequiredService<Program>();
@@ -37,18 +39,18 @@ namespace BGLibExt.Samples.MiTemperatureHumidityMonitor
         {
             _bleModuleConnection.Start("COM3");
 
-            Console.WriteLine("Discover and connect to device"); 
+            _logger?.LogInformation("Discover and connect to device"); 
             var miTemperatureHumidityMonitor = await _bleDeviceFactory.ConnectByServiceUuidAsync("0F180A18".HexStringToByteArray());
 
-            Console.WriteLine("Read device status");
+            _logger?.LogInformation("Read device status");
             var battery = await miTemperatureHumidityMonitor.CharacteristicsByUuid[new Guid("00002a19-0000-1000-8000-00805f9b34fb")].ReadValueAsync();
             var batteryLevel = battery[0];
             var firmware = await miTemperatureHumidityMonitor.CharacteristicsByUuid[new Guid("00002a26-0000-1000-8000-00805f9b34fb")].ReadValueAsync();
             var firmwareVersion = Encoding.ASCII.GetString(firmware).TrimEnd(new char[] { (char)0 });
-            Console.WriteLine($"Battery level: {batteryLevel}%");
-            Console.WriteLine($"Firmware version: {firmwareVersion}");
+            _logger?.LogInformation($"Battery level: {batteryLevel}%");
+            _logger?.LogInformation($"Firmware version: {firmwareVersion}");
 
-            Console.WriteLine("Read device sensor data");
+            _logger?.LogInformation("Read device sensor data");
             miTemperatureHumidityMonitor.CharacteristicsByUuid[new Guid("226caa55-6476-4566-7562-66734470666d")].ValueChanged += (sender, args) =>
             {
                 var dataString = Encoding.ASCII.GetString(args.Value).TrimEnd(new char[] { (char)0 });
@@ -57,11 +59,11 @@ namespace BGLibExt.Samples.MiTemperatureHumidityMonitor
                 {
                     var temperature = float.Parse(match.Groups[1].Captures[0].Value);
                     var airHumidity = float.Parse(match.Groups[2].Captures[0].Value);
-                    Console.WriteLine($"Temperature: {temperature} °C");
-                    Console.WriteLine($"Air humidity: {airHumidity}%");
+                    _logger?.LogInformation($"Temperature: {temperature} °C");
+                    _logger?.LogInformation($"Air humidity: {airHumidity}%");
                 }
             };
-            Console.WriteLine("Enable notifications");
+            _logger?.LogInformation("Enable notifications");
             await miTemperatureHumidityMonitor.CharacteristicsByUuid[new Guid("226caa55-6476-4566-7562-66734470666d")].WriteCccAsync(BleCccValue.NotificationsEnabled);
             var ccc = await miTemperatureHumidityMonitor.CharacteristicsByUuid[new Guid("226caa55-6476-4566-7562-66734470666d")].ReadCccAsync();
 

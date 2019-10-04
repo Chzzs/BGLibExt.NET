@@ -22,7 +22,7 @@ namespace BGLibExt.BleCommands
 
         public async Task<ScanResponseEventArgs> ExecuteAsync(ushort manufacturerId, CancellationToken cancellationToken, int timeout = DefaultTimeout)
         {
-            Logger?.LogTrace($"Discover device by Manufacturer ID {manufacturerId}");
+            Logger?.LogDebug($"Discover device by Manufacturer ID {manufacturerId}");
 
             var taskCompletionSource = new TaskCompletionSource<ScanResponseEventArgs>();
             using (var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))

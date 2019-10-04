@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Bluegiga
 {
@@ -158,7 +159,7 @@ namespace Bluegiga
 
         public override UInt16 SendCommand(System.IO.Ports.SerialPort port, Byte[] cmd)
         {
-            _logger?.LogTrace($"Send bglib command, Data={cmd.ToHexString()}");
+            _logger?.LogTrace("Send bglib command, Data={data}", cmd.ToHexString());
 
             return base.SendCommand(port, cmd);
         }
@@ -166,20 +167,22 @@ namespace Bluegiga
         private void Log(object e)
         {
             var type = e.GetType();
-            var fields = new List<string>();
+            var fields = new Dictionary<string, string>();
+            fields.Add("eventType", type.Name);
             foreach (var field in type.GetFields())
             {
                 var value = field.GetValue(e);
                 if (value is byte[])
                 {
-                    fields.Add($"{field.Name}={((byte[])value).ToHexString()}");
+                    fields.Add(field.Name, ((byte[])value).ToHexString());
                 }
                 else
                 {
-                    fields.Add($"{field.Name}={value}");
+                    fields.Add(field.Name, value.ToString());
                 }
             }
-            _logger?.LogTrace($"{type} triggered, {string.Join(", ", fields)}");
+            var msg = $"Event triggered, {string.Join(", ", fields.Keys.Select(x => $"{x}={{{x}}}"))}";
+            _logger?.LogTrace(msg, fields.Values.ToArray<object>());
         }
     }
 }

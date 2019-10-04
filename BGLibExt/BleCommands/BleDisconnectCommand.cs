@@ -14,7 +14,7 @@ namespace BGLibExt.BleCommands
 
         public Task ExecuteAsync(byte connection)
         {
-            Logger?.LogTrace($"Disconnect from device, Connection={connection}");
+            Logger?.LogDebug($"Disconnect from device, Connection={connection}");
 
             var disconnect = BgLib.BLECommandConnectionDisconnect(connection);
             BgLib.SendCommand(BleModuleConnection.SerialPort, disconnect);

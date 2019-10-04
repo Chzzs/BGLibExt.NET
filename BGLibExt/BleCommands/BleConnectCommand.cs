@@ -21,7 +21,7 @@ namespace BGLibExt.BleCommands
 
         public async Task<StatusEventArgs> ExecuteAsync(byte[] address, BleAddressType addressType, CancellationToken cancellationToken, int timeout = DefaultTimeout)
         {
-            Logger?.LogTrace($"Connect to device, Address={address.ToHexString()}, AddressType={addressType}");
+            Logger?.LogDebug($"Connect to device, Address={address.ToHexString()}, AddressType={addressType}");
 
             var taskCompletionSource = new TaskCompletionSource<StatusEventArgs>();
             using (var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))

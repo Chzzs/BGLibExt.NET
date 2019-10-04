@@ -24,7 +24,7 @@ namespace BGLibExt.BleCommands
 
         public async Task<(List<BleCharacteristic>, List<BleAttribute>)> ExecuteAsync(byte connection, ushort startHandle, ushort endHandle, CancellationToken cancellationToken, int timeout = DefaultTimeout)
         {
-            Logger?.LogTrace($"Find device characteristics, Connection={connection}, StartHandle={startHandle}, EndHandle={endHandle}");
+            Logger?.LogDebug($"Find device characteristics, Connection={connection}, StartHandle={startHandle}, EndHandle={endHandle}");
 
             var taskCompletionSource = new TaskCompletionSource<(List<BleCharacteristic>, List<BleAttribute>)>();
             using (var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))

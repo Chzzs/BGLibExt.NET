@@ -28,7 +28,7 @@ namespace BGLibExt.BleCommands
 
         public async Task<List<BleService>> ExecuteAsync(byte connection, CancellationToken cancellationToken, int timeout = DefaultTimeout)
         {
-            Logger?.LogTrace($"Find device services, Connection={connection}");
+            Logger?.LogDebug($"Find device services, Connection={connection}");
 
             var taskCompletionSource = new TaskCompletionSource<List<BleService>>();
             using (var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))

@@ -35,7 +35,7 @@ namespace BGLibExt.BleCommands
 
         private async Task<(ProcedureCompletedEventArgs, AttributeValueEventArgs)> ReadByHandle(byte connection, ushort attributeHandle, CancellationToken cancellationToken, int timeout = DefaultTimeout)
         {
-            Logger?.LogTrace($"Read device characteristic, Connection={connection}, AttributeHandle={attributeHandle}");
+            Logger?.LogDebug($"Read device characteristic, Connection={connection}, AttributeHandle={attributeHandle}");
 
             var taskCompletionSource = new TaskCompletionSource<(ProcedureCompletedEventArgs, AttributeValueEventArgs)>();
             using (var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
@@ -70,7 +70,7 @@ namespace BGLibExt.BleCommands
 
         private async Task<(ProcedureCompletedEventArgs, AttributeValueEventArgs)> ReadLong(byte connection, ushort attributeHandle, CancellationToken cancellationToken, int timeout = DefaultTimeout)
         {
-            Logger?.LogTrace($"Read long device characteristic, Connection={connection}, AttributeHandle={attributeHandle}");
+            Logger?.LogDebug($"Read long device characteristic, Connection={connection}, AttributeHandle={attributeHandle}");
 
             var taskCompletionSource = new TaskCompletionSource<(ProcedureCompletedEventArgs, AttributeValueEventArgs)>();
             using (var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
