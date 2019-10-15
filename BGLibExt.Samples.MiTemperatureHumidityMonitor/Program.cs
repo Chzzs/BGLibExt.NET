@@ -8,20 +8,20 @@ using System.Threading.Tasks;
 
 namespace BGLibExt.Samples.MiTemperatureHumidityMonitor
 {
-    class Program
+    internal class Program
     {
+        private readonly BleDeviceManager _bleDeviceManager;
         private readonly BleModuleConnection _bleModuleConnection;
-        private readonly BleDeviceManager _bleDeviceFactory;
         private readonly ILogger<Program> _logger;
 
-        public Program(BleModuleConnection bleModuleConnection, BleDeviceManager bleDeviceFactory, ILogger<Program> logger = null)
+        public Program(BleModuleConnection bleModuleConnection, BleDeviceManager bleDeviceManager, ILogger<Program> logger = null)
         {
             _bleModuleConnection = bleModuleConnection;
-            _bleDeviceFactory = bleDeviceFactory;
+            _bleDeviceManager = bleDeviceManager;
             _logger = logger;
         }
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var servicesProvider = new ServiceCollection()
                 .AddLogging(configure => configure.AddConsole().SetMinimumLevel(LogLevel.Debug))
@@ -39,8 +39,8 @@ namespace BGLibExt.Samples.MiTemperatureHumidityMonitor
         {
             _bleModuleConnection.Start("COM3");
 
-            _logger?.LogInformation("Discover and connect to device"); 
-            var miTemperatureHumidityMonitor = await _bleDeviceFactory.ConnectByServiceUuidAsync("0F180A18".HexStringToByteArray());
+            _logger?.LogInformation("Discover and connect to device");
+            var miTemperatureHumidityMonitor = await _bleDeviceManager.ConnectByServiceUuidAsync("0F180A18".HexStringToByteArray());
 
             _logger?.LogInformation("Read device status");
             var battery = await miTemperatureHumidityMonitor.CharacteristicsByUuid[new Guid("00002a19-0000-1000-8000-00805f9b34fb")].ReadValueAsync();

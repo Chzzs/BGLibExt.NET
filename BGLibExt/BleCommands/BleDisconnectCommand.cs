@@ -1,6 +1,5 @@
 ﻿using Bluegiga;
 using Microsoft.Extensions.Logging;
-using System.IO.Ports;
 using System.Threading.Tasks;
 
 namespace BGLibExt.BleCommands

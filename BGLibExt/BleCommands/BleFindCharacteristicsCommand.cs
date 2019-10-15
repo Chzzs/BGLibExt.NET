@@ -3,7 +3,6 @@ using Bluegiga.BLE.Events.ATTClient;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.IO.Ports;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -62,11 +61,11 @@ namespace BGLibExt.BleCommands
                     BgLib.BLEEventATTClientFindInformationFound += OnFindInformationFound;
                     BgLib.BLEEventATTClientProcedureCompleted += OnProcedureCompleted;
 
-                    using (cancellationTokenSource.Token.Register(() => taskCompletionSource.SetCanceled(), useSynchronizationContext: false))
+                    using (cancellationTokenSource.Token.Register(() => taskCompletionSource.SetCanceled(), false))
                     {
                         BgLib.SendCommand(BleModuleConnection.SerialPort, BgLib.BLECommandATTClientFindInformation(connection, startHandle, endHandle));
 
-                        return await taskCompletionSource.Task.ConfigureAwait(continueOnCapturedContext: false);
+                        return await taskCompletionSource.Task.ConfigureAwait(false);
                     }
                 }
                 finally
@@ -94,11 +93,11 @@ namespace BGLibExt.BleCommands
 
             foreach (var attr in attributes)
             {
-                if (attr.AttributeUuid.SequenceEqual(BleAttribute.ServiceUuid))
+                if (attr.Uuid.SequenceEqual(BleAttribute.ServiceUuid))
                 {
                     // defines service - do nothing
                 }
-                else if (attr.AttributeUuid.SequenceEqual(BleAttribute.CharacteristicUuid))
+                else if (attr.Uuid.SequenceEqual(BleAttribute.CharacteristicUuid))
                 {
                     // finish previous characteristic
                     current = null;
@@ -106,7 +105,7 @@ namespace BGLibExt.BleCommands
                     // create characteristic from next attribute
                     createCharacteristic = true;
                 }
-                else if (attr.AttributeUuid.SequenceEqual(BleAttribute.CharacteristicCccUuid))
+                else if (attr.Uuid.SequenceEqual(BleAttribute.CharacteristicCccUuid))
                 {
                     // add ccc capabilities to characteristic
                     current.SetCccHandle(attr.Handle);
@@ -116,7 +115,7 @@ namespace BGLibExt.BleCommands
                     // if new characteristic begins - create it else skip and do nothing
                     if (createCharacteristic)
                     {
-                        current = new BleCharacteristic(BgLib, BleModuleConnection, Logger, attr.Connection, attr.AttributeUuid, attr.Handle);
+                        current = new BleCharacteristic(BgLib, BleModuleConnection, Logger, attr.Connection, attr.Uuid, attr.Handle);
                         createCharacteristic = false;
 
                         characteristics.Add(current);

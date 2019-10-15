@@ -8,8 +8,8 @@ namespace BGLibExt
         public List<BleAttribute> Attributes { get; private set; }
         public List<BleCharacteristic> Characteristics { get; private set; }
         public ushort EndHandle { get; private set; }
-        public Guid Uuid { get; private set; }
         public ushort StartHandle { get; private set; }
+        public Guid Uuid { get; private set; }
 
         public BleService(byte[] uuid, ushort startHandle, ushort endHandle)
         {

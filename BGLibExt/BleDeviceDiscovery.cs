@@ -1,7 +1,6 @@
 ﻿using Bluegiga;
 using Bluegiga.BLE.Events.GAP;
 using Microsoft.Extensions.Logging;
-using System.Linq;
 
 namespace BGLibExt
 {

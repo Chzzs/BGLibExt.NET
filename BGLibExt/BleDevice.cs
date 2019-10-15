@@ -14,14 +14,14 @@ namespace BGLibExt
     {
         private readonly BGLib _bgLib;
         private readonly BleModuleConnection _bleModuleConnection;
-        private readonly ILogger _logger;
         private readonly byte _connectionHandle;
+        private readonly ILogger _logger;
 
         public event DisconnectedEventHandler Disconnected;
 
-        public bool IsConnected { get; private set; }
-        public Dictionary<Guid, BleCharacteristic> CharacteristicsByUuid { get; private set; } = new Dictionary<Guid, BleCharacteristic>();
         public Dictionary<ushort, BleCharacteristic> CharacteristicsByHandle { get; private set; } = new Dictionary<ushort, BleCharacteristic>();
+        public Dictionary<Guid, BleCharacteristic> CharacteristicsByUuid { get; private set; } = new Dictionary<Guid, BleCharacteristic>();
+        public bool IsConnected { get; private set; }
         public List<BleService> Services { get; private set; }
 
         internal BleDevice(BGLib bgLib, BleModuleConnection bleModuleConnection, ILogger logger, byte connectionHandle, List<BleService> services)

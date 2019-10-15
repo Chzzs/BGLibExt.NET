@@ -6,10 +6,9 @@ namespace BGLibExt.BleCommands
     internal abstract class BleCommand
     {
         protected const int DefaultTimeout = 10000;
-
+        protected readonly ILogger Logger;
         protected BGLib BgLib;
         protected BleModuleConnection BleModuleConnection;
-        protected readonly ILogger Logger;
 
         protected BleCommand(BGLib bgLib, BleModuleConnection bleModuleConnection, ILogger logger)
         {

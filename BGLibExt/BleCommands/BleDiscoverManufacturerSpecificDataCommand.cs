@@ -1,7 +1,6 @@
 ﻿using Bluegiga;
 using Bluegiga.BLE.Events.GAP;
 using Microsoft.Extensions.Logging;
-using System.IO.Ports;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -43,7 +42,7 @@ namespace BGLibExt.BleCommands
                 {
                     BgLib.BLEEventGAPScanResponse += OnScanResponse;
 
-                    using (cancellationTokenSource.Token.Register(() => taskCompletionSource.SetCanceled(), useSynchronizationContext: false))
+                    using (cancellationTokenSource.Token.Register(() => taskCompletionSource.SetCanceled(), false))
                     {
                         BgLib.SendCommand(BleModuleConnection.SerialPort, BgLib.BLECommandGAPSetScanParameters(0xC8, 0xC8, 1));
                         BgLib.SendCommand(BleModuleConnection.SerialPort, BgLib.BLECommandGAPDiscover(1));

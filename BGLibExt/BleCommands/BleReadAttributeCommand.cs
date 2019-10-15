@@ -3,7 +3,6 @@ using Bluegiga.BLE.Events.ATTClient;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.IO.Ports;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -54,11 +53,11 @@ namespace BGLibExt.BleCommands
                 {
                     BgLib.BLEEventATTClientAttributeValue += OnAttributeValue;
 
-                    using (cancellationTokenSource.Token.Register(() => taskCompletionSource.SetCanceled(), useSynchronizationContext: false))
+                    using (cancellationTokenSource.Token.Register(() => taskCompletionSource.SetCanceled(), false))
                     {
                         BgLib.SendCommand(BleModuleConnection.SerialPort, BgLib.BLECommandATTClientReadByHandle(connection, attributeHandle));
 
-                        return await taskCompletionSource.Task.ConfigureAwait(continueOnCapturedContext: false);
+                        return await taskCompletionSource.Task.ConfigureAwait(false);
                     }
                 }
                 finally
@@ -109,11 +108,11 @@ namespace BGLibExt.BleCommands
                     BgLib.BLEEventATTClientAttributeValue += OnAttributeValue;
                     BgLib.BLEEventATTClientProcedureCompleted += OnProcedureCompleted;
 
-                    using (cancellationTokenSource.Token.Register(() => taskCompletionSource.SetCanceled(), useSynchronizationContext: false))
+                    using (cancellationTokenSource.Token.Register(() => taskCompletionSource.SetCanceled(), false))
                     {
                         BgLib.SendCommand(BleModuleConnection.SerialPort, BgLib.BLECommandATTClientReadLong(connection, attributeHandle));
 
-                        return await taskCompletionSource.Task.ConfigureAwait(continueOnCapturedContext: false);
+                        return await taskCompletionSource.Task.ConfigureAwait(false);
                     }
                 }
                 finally

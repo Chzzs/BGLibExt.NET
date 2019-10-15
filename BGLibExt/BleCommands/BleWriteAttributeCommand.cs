@@ -1,7 +1,6 @@
 ﻿using Bluegiga;
 using Bluegiga.BLE.Events.ATTClient;
 using Microsoft.Extensions.Logging;
-using System.IO.Ports;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -40,11 +39,11 @@ namespace BGLibExt.BleCommands
                 {
                     BgLib.BLEEventATTClientProcedureCompleted += OnProcedureCompleted;
 
-                    using (cancellationTokenSource.Token.Register(() => taskCompletionSource.SetCanceled(), useSynchronizationContext: false))
+                    using (cancellationTokenSource.Token.Register(() => taskCompletionSource.SetCanceled(), false))
                     {
                         BgLib.SendCommand(BleModuleConnection.SerialPort, BgLib.BLECommandATTClientAttributeWrite(connection, attributeHandle, value));
 
-                        return await taskCompletionSource.Task.ConfigureAwait(continueOnCapturedContext: false);
+                        return await taskCompletionSource.Task.ConfigureAwait(false);
                     }
                 }
                 finally

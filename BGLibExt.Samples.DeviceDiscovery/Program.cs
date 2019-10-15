@@ -1,16 +1,15 @@
 ﻿using Bluegiga;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace BGLibExt.Samples.DeviceDiscovery
 {
-    class Program
+    internal class Program
     {
-        private readonly BleModuleConnection _bleModuleConnection;
         private readonly BleDeviceDiscovery _bleDeviceDiscovery;
+        private readonly BleModuleConnection _bleModuleConnection;
         private readonly ILogger<Program> _logger;
 
         public Program(BleModuleConnection bleModuleConnection, BleDeviceDiscovery bleDeviceDiscovery, ILogger<Program> logger = null)
@@ -20,7 +19,7 @@ namespace BGLibExt.Samples.DeviceDiscovery
             _logger = logger;
         }
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var servicesProvider = new ServiceCollection()
                 .AddLogging(configure => configure.AddConsole().SetMinimumLevel(LogLevel.Debug))

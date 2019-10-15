@@ -44,11 +44,11 @@ namespace BGLibExt.BleCommands
                 {
                     BgLib.BLEEventConnectionStatus += OnConnectionStatus;
 
-                    using (cancellationTokenSource.Token.Register(() => taskCompletionSource.SetCanceled(), useSynchronizationContext: false))
+                    using (cancellationTokenSource.Token.Register(() => taskCompletionSource.SetCanceled(), false))
                     {
                         BgLib.SendCommand(BleModuleConnection.SerialPort, BgLib.BLECommandGAPConnectDirect((byte[])address, (byte)addressType, 0x20, 0x30, 0x100, 0));
 
-                        return await taskCompletionSource.Task.ConfigureAwait(continueOnCapturedContext: false);
+                        return await taskCompletionSource.Task.ConfigureAwait(false);
                     }
                 }
                 finally

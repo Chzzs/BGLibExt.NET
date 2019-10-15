@@ -5,12 +5,6 @@ namespace BGLibExt
 {
     public static class ByteArrayExtensions
     {
-        public static string ToHexString(this byte[] value)
-        {
-            var hex = BitConverter.ToString(value);
-            return hex.Replace("-", "");
-        }
-
         public static Guid ToBleGuid(this byte[] value)
         {
             if (value.Length == 16)
@@ -24,6 +18,12 @@ namespace BGLibExt
                 baseGuid.InsertRange(12, value);
                 return baseGuid.ToArray().ToBleGuidInternal();
             }
+        }
+
+        public static string ToHexString(this byte[] value)
+        {
+            var hex = BitConverter.ToString(value);
+            return hex.Replace("-", "");
         }
 
         private static Guid ToBleGuidInternal(this byte[] value)

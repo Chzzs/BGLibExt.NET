@@ -2,7 +2,6 @@
 using Bluegiga;
 using Microsoft.Extensions.Logging;
 using System;
-using System.IO.Ports;
 using System.Threading.Tasks;
 
 namespace BGLibExt
@@ -11,17 +10,17 @@ namespace BGLibExt
     {
         private readonly BGLib _bgLib;
         private readonly BleModuleConnection _bleModuleConnection;
-        private readonly ILogger _logger;
         private readonly byte _connection;
-
-        public Guid Uuid { get; private set; }
-        public ushort Handle { get; private set; }
-        public ushort HandleCcc { get; private set; }
-        public bool HasCcc { get; private set; }
+        private readonly ILogger _logger;
 
         public event CharacteristicValueChangedEventHandler ValueChanged;
 
         public delegate void CharacteristicValueChangedEventHandler(object sender, BleCharacteristicValueChangedEventArgs e);
+
+        public ushort Handle { get; private set; }
+        public ushort HandleCcc { get; private set; }
+        public bool HasCcc { get; private set; }
+        public Guid Uuid { get; private set; }
 
         internal BleCharacteristic(BGLib bgLib, BleModuleConnection bleModuleConnection, ILogger logger, byte connection, byte[] uuid, ushort handle)
         {
@@ -31,22 +30,6 @@ namespace BGLibExt
             _connection = connection;
             Uuid = uuid.ToBleGuid();
             Handle = handle;
-        }
-
-        internal void SetCccHandle(ushort handle)
-        {
-            HandleCcc = handle;
-            HasCcc = true;
-        }
-
-        /// <summary>
-        /// Read characteristic value
-        /// </summary>
-        /// <param name="readLongValue">false = read &lt;= 22 bytes, true = read &gt; 22 bytes</param>
-        /// <returns>Characteristic value</returns>
-        public async Task<byte[]> ReadValueAsync(bool readLongValue = false)
-        {
-            return await ReadValueAsync(Handle, readLongValue);
         }
 
         /// <summary>
@@ -70,12 +53,13 @@ namespace BGLibExt
         }
 
         /// <summary>
-        /// Write characteristic value
+        /// Read characteristic value
         /// </summary>
-        /// <param name="value">Characteristic value</param>
-        public async Task WriteValueAsync(byte[] value)
+        /// <param name="readLongValue">false = read &lt;= 22 bytes, true = read &gt; 22 bytes</param>
+        /// <returns>Characteristic value</returns>
+        public async Task<byte[]> ReadValueAsync(bool readLongValue = false)
         {
-            await WriteValueAsync(Handle, value);
+            return await ReadValueAsync(Handle, readLongValue);
         }
 
         /// <summary>
@@ -95,6 +79,26 @@ namespace BGLibExt
             await WriteValueAsync(HandleCcc, byteSerializer.GetBuffer());
         }
 
+        /// <summary>
+        /// Write characteristic value
+        /// </summary>
+        /// <param name="value">Characteristic value</param>
+        public async Task WriteValueAsync(byte[] value)
+        {
+            await WriteValueAsync(Handle, value);
+        }
+
+        internal void SetCccHandle(ushort handle)
+        {
+            HandleCcc = handle;
+            HasCcc = true;
+        }
+
+        internal void TriggerCharacteristicValueChanged(byte[] data)
+        {
+            ValueChanged?.Invoke(this, new BleCharacteristicValueChangedEventArgs(data));
+        }
+
         private async Task<byte[]> ReadValueAsync(ushort handle, bool readLongValue)
         {
             var readAttributeCommand = new BleReadAttributeCommand(_bgLib, _bleModuleConnection, _logger);
@@ -106,11 +110,6 @@ namespace BGLibExt
         {
             var writeAttributeCommand = new BleWriteAttributeCommand(_bgLib, _bleModuleConnection, _logger);
             await writeAttributeCommand.ExecuteAsync(_connection, handle, value);
-        }
-
-        internal void TriggerCharacteristicValueChanged(byte[] data)
-        {
-            ValueChanged?.Invoke(this, new BleCharacteristicValueChangedEventArgs(data));
         }
     }
 }

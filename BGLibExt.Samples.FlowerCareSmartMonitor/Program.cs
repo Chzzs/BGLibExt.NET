@@ -8,20 +8,20 @@ using System.Threading.Tasks;
 
 namespace BGLibExt.Samples.FlowerCareSmartMonitor
 {
-    class Program
+    internal class Program
     {
+        private readonly BleDeviceManager _bleDeviceManager;
         private readonly BleModuleConnection _bleModuleConnection;
-        private readonly BleDeviceManager _bleDeviceFactory;
         private readonly ILogger<Program> _logger;
 
-        public Program(BleModuleConnection bleModuleConnection, BleDeviceManager bleDeviceFactory, ILogger<Program> logger = null)
+        public Program(BleModuleConnection bleModuleConnection, BleDeviceManager bleDeviceManager, ILogger<Program> logger = null)
         {
             _bleModuleConnection = bleModuleConnection;
-            _bleDeviceFactory = bleDeviceFactory;
+            _bleDeviceManager = bleDeviceManager;
             _logger = logger;
         }
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var servicesProvider = new ServiceCollection()
                 .AddLogging(configure => configure.AddConsole().SetMinimumLevel(LogLevel.Debug))
@@ -40,7 +40,7 @@ namespace BGLibExt.Samples.FlowerCareSmartMonitor
             _bleModuleConnection.Start("COM3");
 
             _logger?.LogInformation("Discover and connect to device");
-            var flowerCareSmartMonitor = await _bleDeviceFactory.ConnectByServiceUuidAsync("95FE".HexStringToByteArray());
+            var flowerCareSmartMonitor = await _bleDeviceManager.ConnectByServiceUuidAsync("95FE".HexStringToByteArray());
 
             _logger?.LogInformation("Read device status");
             var status = await flowerCareSmartMonitor.CharacteristicsByUuid[new Guid("00001a02-0000-1000-8000-00805f9b34fb")].ReadValueAsync();

@@ -3,7 +3,6 @@ using Bluegiga.BLE.Events.ATTClient;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.IO.Ports;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -55,7 +54,7 @@ namespace BGLibExt.BleCommands
                         }
                         else
                         {
-                            taskCompletionSource.SetException(new Exception("Couldn't find any servies"));
+                            taskCompletionSource.SetException(new Exception("Couldn't find any services"));
                         }
                     }
                 }
@@ -65,11 +64,11 @@ namespace BGLibExt.BleCommands
                     BgLib.BLEEventATTClientGroupFound += OnGroupFound;
                     BgLib.BLEEventATTClientProcedureCompleted += OnProcedureCompleted;
 
-                    using (cancellationTokenSource.Token.Register(() => taskCompletionSource.SetCanceled(), useSynchronizationContext: false))
+                    using (cancellationTokenSource.Token.Register(() => taskCompletionSource.SetCanceled(), false))
                     {
                         BgLib.SendCommand(BleModuleConnection.SerialPort, BgLib.BLECommandATTClientReadByGroupType(connection, GattMinHandle, GattMaxHandle, (byte[])GattServiceTypePrimary));
 
-                        return await taskCompletionSource.Task.ConfigureAwait(continueOnCapturedContext: false);
+                        return await taskCompletionSource.Task.ConfigureAwait(false);
                     }
                 }
                 finally
