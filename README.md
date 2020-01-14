@@ -2,7 +2,7 @@
 
 A higher abstraction level .NET library for Silicon Labs/Bluegiga BLE112 modules.
 
-This library is based on work by [jedinja/monomyo](https://github.com/jedinja/monomyo) and [jrowberg/bglib](https://github.com/jrowberg/bglib). The BGLib was left as it was and the higher level abstraction code from [jedinja/monomyo](https://github.com/jedinja/monomyo) was refactored to be used as a library and some BLE advertisement related features have been added. So thanks goes out to them since they did most of the work.
+This library is based on [jedinja/monomyo](https://github.com/jedinja/monomyo) and [jrowberg/bglib](https://github.com/jrowberg/bglib), so thanks goes out to them for their work. The BGLib was left as it was and the higher level abstraction code from [jedinja/monomyo](https://github.com/jedinja/monomyo) was refactored to be used as a library and some BLE advertisement related features have been added. For version 2.0 BGLibExt has been almost completely rewritten, because there were a lot of things that required a clean up.
 
 ## Installation
 
@@ -13,60 +13,87 @@ Install nuget package [BGLibExt](https://www.nuget.org/packages/BGLibExt/)
 ### Discover devices
 
 ```c#
-var ble = new BleConnector("COM1");
-ble.ScanResponse += OnDiscoverDevices;
-ble.StartDeviceDiscovery();
-Task.Delay(5000).Wait();
-ble.StopDeviceDiscovery();
-ble.ScanResponse -= OnDiscoverDevices;
+var bleModuleConnection = new BleModuleConnection();
+bleModuleConnection.Start("COM1");
 
-private void OnDiscoverDevices(object sender, BleScanResponseReceivedEventArgs args)
+var bleDeviceDiscovery = new BleDeviceDiscovery(new BGLib(), bleModuleConnection);
+bleDeviceDiscovery.ScanResponse += (sender, args) =>
 {
-}
+};
+bleDeviceDiscovery.StartDeviceDiscovery();
+await Task.Delay(10000);
+bleDeviceDiscovery.StopDeviceDiscovery();
+
+bleModuleConnection.Stop();
 ```
 
 ### Connect to device
 
 ```c#
-var ble = new BleConnector("COM1");
-var peripheralMap = ble.Connect(address, addressType);
+var bleModuleConnection = new BleModuleConnection();
+bleModuleConnection.Start("COM1");
+
+var bleDeviceManager = new BleDeviceManager(new BGLib(), bleModuleConnection);
+var bleDevice = await bleDeviceManager.ConnectAsync(address, addressType);
+
+bleModuleConnection.Stop();
 ```
 
 ### Disconnect from device
 
 ```c#
-var ble = new BleConnector("COM1");
-var peripheralMap = ble.Connect(address, addressType);
-ble.Disconnect();
+var bleModuleConnection = new BleModuleConnection();
+bleModuleConnection.Start("COM1");
+
+var bleDeviceManager = new BleDeviceManager(new BGLib(), bleModuleConnection);
+var bleDevice = await bleDeviceManager.ConnectAsync(address, addressType);
+await bleDevice.DisconnectAsync();
+
+bleModuleConnection.Stop();
 ```
 
 ### Read characteristic
 
 ```c#
-var ble = new BleConnector("COM1");
-var peripheralMap = ble.Connect(address, addressType);
-var data = ble.ReadCharacteristic(characteristicId, false);
+var bleModuleConnection = new BleModuleConnection();
+bleModuleConnection.Start("COM1");
+
+var bleDeviceManager = new BleDeviceManager(new BGLib(), bleModuleConnection);
+var bleDevice = await bleDeviceManager.ConnectAsync(address, addressType);
+var data = await bleDevice.CharacteristicsByUuid[characteristicId].ReadValueAsync();
+await bleDevice.DisconnectAsync();
+
+bleModuleConnection.Stop();
 ```
 
 ### Write characteristic
 
 ```c#
-var ble = new BleConnector("COM1");
-var peripheralMap = ble.Connect(address, addressType);
-ble.WriteCharacteristic(characteristicId, false);
+var bleModuleConnection = new BleModuleConnection();
+bleModuleConnection.Start("COM1");
+
+var bleDeviceManager = new BleDeviceManager(new BGLib(), bleModuleConnection);
+var bleDevice = await bleDeviceManager.ConnectAsync(address, addressType);
+await bleDevice.CharacteristicsByUuid[characteristicId].WriteValueAsync();
+await bleDevice.DisconnectAsync();
+
+bleModuleConnection.Stop();
 ```
 
 ### Characteristic notifications
 
 ```c#
-var ble = new BleConnector("COM1");
-var peripheralMap = ble.Connect(address, addressType);
-// Validate peripheralMap
-// Get uuid of characteristic for enabling notifications
-ble.WriteClientCharacteristicConfiguration(uuid, BleCCCValue.NotificationsEnabled);
-ble.CharacteristicValueChanged += OnValueChanged;
+var bleModuleConnection = new BleModuleConnection();
+bleModuleConnection.Start("COM1");
 
-private void OnValueChanged(object sender, BleCharacteristicValueChangedEventArgs e)
+var bleDeviceManager = new BleDeviceManager(new BGLib(), bleModuleConnection);
+var bleDevice = await bleDeviceManager.ConnectAsync(address, addressType);
+bleDevice.CharacteristicsByUuid[characteristicId].ValueChanged += (sender, args) =>
 {
 }
+await bleDevice.CharacteristicsByUuid[characteristicId].WriteCccAsync(BleCCCValue.NotificationsEnabled);
+await Task.Delay(10000);
+await bleDevice.DisconnectAsync();
+
+bleModuleConnection.Stop();
 ```
