@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BGLibExt
@@ -20,10 +21,10 @@ namespace BGLibExt
             }
         }
 
-        public static string ToHexString(this byte[] value)
+        public static string ToHexString(this byte[] value, string delimiter = "")
         {
             var hex = BitConverter.ToString(value);
-            return hex.Replace("-", "");
+            return hex.Replace("-", delimiter);
         }
 
         private static Guid ToBleGuidInternal(this byte[] value)
@@ -33,6 +34,14 @@ namespace BGLibExt
             Array.Reverse(guidBytes, 4, 2);
             Array.Reverse(guidBytes, 6, 2);
             return new Guid(guidBytes);
+        }
+
+        public static IEnumerable<byte[]> Split(this byte[] array, int size)
+        {
+            for (var i = 0; i < (float)array.Length / size; i++)
+            {
+                yield return array.Skip(i * size).Take(size).ToArray();
+            }
         }
     }
 }

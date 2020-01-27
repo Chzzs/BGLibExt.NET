@@ -67,7 +67,7 @@ namespace BGLibExt.Samples.MiTemperatureHumidityMonitor
             await miTemperatureHumidityMonitor.CharacteristicsByUuid[new Guid("226caa55-6476-4566-7562-66734470666d")].WriteCccAsync(BleCccValue.NotificationsEnabled);
             var ccc = await miTemperatureHumidityMonitor.CharacteristicsByUuid[new Guid("226caa55-6476-4566-7562-66734470666d")].ReadCccAsync();
 
-            await Task.Delay(5000);
+            await Task.Delay(10000);
 
             await miTemperatureHumidityMonitor.DisconnectAsync();
 

@@ -39,7 +39,11 @@ namespace BGLibExt.Samples.DeviceDiscovery
 
             _bleDeviceDiscovery.ScanResponse += (sender, args) =>
             {
-                _logger?.LogInformation($"Device discovered, Address={args.Address.ToHexString()}, Data={args.Data.ToHexString()}, ParsedData={string.Join(";", args.ParsedData.Select(x => $"{x.Type}={x.ToDebugString()}"))}");
+                // Filter advertisement data by an advertised service uuid
+                if (args.ParsedData.Any(x => x.Type == BleAdvertisingDataType.CompleteListof128BitServiceClassUUIDs && x.ToGuid() == new System.Guid("0a5d8ff1-67f2-4a14-b6b7-4e3baa285f12")))
+                {
+                    _logger?.LogInformation($"Device discovered, Address={args.Address.Reverse().ToArray().ToHexString(":")}, Data={args.Data.ToHexString()}, ParsedData={string.Join(";", args.ParsedData.Select(x => $"{x.Type}={x.ToDebugString()}"))}");
+                }
             };
 
             _bleDeviceDiscovery.StartDeviceDiscovery();
