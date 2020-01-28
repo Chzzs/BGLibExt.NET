@@ -4,7 +4,9 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Company>BGLibExt</Company>
     <Product>BGLibExt</Product>
+    <Version>2.0.0.0</Version>
     <PackageId>BGLibExt</PackageId>
+    <PackageReleaseNotes>For version 2.0 BGLibExt has been almost completely rewritten, because there were a lot of things that required a clean up.</PackageReleaseNotes>
     <Authors>BGLibExt</Authors>
     <PackageProjectUrl>https://github.com/BGLibExt/BGLibExt.NET</PackageProjectUrl>
     <Description>A higher abstraction level .NET library for Silicon Labs/Bluegiga BLE112 modules</Description>
