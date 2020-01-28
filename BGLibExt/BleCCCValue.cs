@@ -3,7 +3,7 @@
 namespace BGLibExt
 {
     [Flags]
-    public enum BleCCCValue : ushort
+    public enum BleCccValue : ushort
     {
         None = 0x00,
         NotificationsEnabled = 0x01,

@@ -41,7 +41,7 @@ namespace BGLibExt
             }
         }
 
-        public void Serialize(BleCCCValue value)
+        public void Serialize(BleCccValue value)
         {
             Serialize((ushort)value);
         }

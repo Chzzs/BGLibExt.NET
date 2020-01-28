@@ -1,173 +1,188 @@
 ﻿using BGLibExt;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Bluegiga
 {
     public class BGLibDebug : BGLib
     {
-        private void Print(object e)
+        private readonly ILogger<BGLibDebug> _logger;
+
+        public BGLibDebug(ILogger<BGLibDebug> logger = null)
+        {
+            _logger = logger;
+
+            BLEResponseSystemReset += (sender, e) => Log(e);
+            BLEResponseSystemHello += (sender, e) => Log(e);
+            BLEResponseSystemAddressGet += (sender, e) => Log(e);
+            BLEResponseSystemRegWrite += (sender, e) => Log(e);
+            BLEResponseSystemRegRead += (sender, e) => Log(e);
+            BLEResponseSystemGetCounters += (sender, e) => Log(e);
+            BLEResponseSystemGetConnections += (sender, e) => Log(e);
+            BLEResponseSystemReadMemory += (sender, e) => Log(e);
+            BLEResponseSystemGetInfo += (sender, e) => Log(e);
+            BLEResponseSystemEndpointTX += (sender, e) => Log(e);
+            BLEResponseSystemWhitelistAppend += (sender, e) => Log(e);
+            BLEResponseSystemWhitelistRemove += (sender, e) => Log(e);
+            BLEResponseSystemWhitelistClear += (sender, e) => Log(e);
+            BLEResponseSystemEndpointRX += (sender, e) => Log(e);
+            BLEResponseSystemEndpointSetWatermarks += (sender, e) => Log(e);
+            BLEResponseSystemAesSetkey += (sender, e) => Log(e);
+            BLEResponseSystemAesEncrypt += (sender, e) => Log(e);
+            BLEResponseSystemAesDecrypt += (sender, e) => Log(e);
+            BLEResponseFlashPSDefrag += (sender, e) => Log(e);
+            BLEResponseFlashPSDump += (sender, e) => Log(e);
+            BLEResponseFlashPSEraseAll += (sender, e) => Log(e);
+            BLEResponseFlashPSSave += (sender, e) => Log(e);
+            BLEResponseFlashPSLoad += (sender, e) => Log(e);
+            BLEResponseFlashPSErase += (sender, e) => Log(e);
+            BLEResponseFlashErasePage += (sender, e) => Log(e);
+            BLEResponseFlashWriteData += (sender, e) => Log(e);
+            BLEResponseFlashReadData += (sender, e) => Log(e);
+            BLEResponseAttributesWrite += (sender, e) => Log(e);
+            BLEResponseAttributesRead += (sender, e) => Log(e);
+            BLEResponseAttributesReadType += (sender, e) => Log(e);
+            BLEResponseAttributesUserReadResponse += (sender, e) => Log(e);
+            BLEResponseAttributesUserWriteResponse += (sender, e) => Log(e);
+            BLEResponseAttributesSend += (sender, e) => Log(e);
+            BLEResponseConnectionDisconnect += (sender, e) => Log(e);
+            BLEResponseConnectionGetRssi += (sender, e) => Log(e);
+            BLEResponseConnectionUpdate += (sender, e) => Log(e);
+            BLEResponseConnectionVersionUpdate += (sender, e) => Log(e);
+            BLEResponseConnectionChannelMapGet += (sender, e) => Log(e);
+            BLEResponseConnectionChannelMapSet += (sender, e) => Log(e);
+            BLEResponseConnectionFeaturesGet += (sender, e) => Log(e);
+            BLEResponseConnectionGetStatus += (sender, e) => Log(e);
+            BLEResponseConnectionRawTX += (sender, e) => Log(e);
+            BLEResponseATTClientFindByTypeValue += (sender, e) => Log(e);
+            BLEResponseATTClientReadByGroupType += (sender, e) => Log(e);
+            BLEResponseATTClientReadByType += (sender, e) => Log(e);
+            BLEResponseATTClientFindInformation += (sender, e) => Log(e);
+            BLEResponseATTClientReadByHandle += (sender, e) => Log(e);
+            BLEResponseATTClientAttributeWrite += (sender, e) => Log(e);
+            BLEResponseATTClientWriteCommand += (sender, e) => Log(e);
+            BLEResponseATTClientIndicateConfirm += (sender, e) => Log(e);
+            BLEResponseATTClientReadLong += (sender, e) => Log(e);
+            BLEResponseATTClientPrepareWrite += (sender, e) => Log(e);
+            BLEResponseATTClientExecuteWrite += (sender, e) => Log(e);
+            BLEResponseATTClientReadMultiple += (sender, e) => Log(e);
+            BLEResponseSMEncryptStart += (sender, e) => Log(e);
+            BLEResponseSMSetBondableMode += (sender, e) => Log(e);
+            BLEResponseSMDeleteBonding += (sender, e) => Log(e);
+            BLEResponseSMSetParameters += (sender, e) => Log(e);
+            BLEResponseSMPasskeyEntry += (sender, e) => Log(e);
+            BLEResponseSMGetBonds += (sender, e) => Log(e);
+            BLEResponseSMSetOobData += (sender, e) => Log(e);
+            BLEResponseSMWhitelistBonds += (sender, e) => Log(e);
+            BLEResponseGAPSetPrivacyFlags += (sender, e) => Log(e);
+            BLEResponseGAPSetMode += (sender, e) => Log(e);
+            BLEResponseGAPDiscover += (sender, e) => Log(e);
+            BLEResponseGAPConnectDirect += (sender, e) => Log(e);
+            BLEResponseGAPEndProcedure += (sender, e) => Log(e);
+            BLEResponseGAPConnectSelective += (sender, e) => Log(e);
+            BLEResponseGAPSetFiltering += (sender, e) => Log(e);
+            BLEResponseGAPSetScanParameters += (sender, e) => Log(e);
+            BLEResponseGAPSetAdvParameters += (sender, e) => Log(e);
+            BLEResponseGAPSetAdvData += (sender, e) => Log(e);
+            BLEResponseGAPSetDirectedConnectableMode += (sender, e) => Log(e);
+            BLEResponseHardwareIOPortConfigIrq += (sender, e) => Log(e);
+            BLEResponseHardwareSetSoftTimer += (sender, e) => Log(e);
+            BLEResponseHardwareADCRead += (sender, e) => Log(e);
+            BLEResponseHardwareIOPortConfigDirection += (sender, e) => Log(e);
+            BLEResponseHardwareIOPortConfigFunction += (sender, e) => Log(e);
+            BLEResponseHardwareIOPortConfigPull += (sender, e) => Log(e);
+            BLEResponseHardwareIOPortWrite += (sender, e) => Log(e);
+            BLEResponseHardwareIOPortRead += (sender, e) => Log(e);
+            BLEResponseHardwareSPIConfig += (sender, e) => Log(e);
+            BLEResponseHardwareSPITransfer += (sender, e) => Log(e);
+            BLEResponseHardwareI2CRead += (sender, e) => Log(e);
+            BLEResponseHardwareI2CWrite += (sender, e) => Log(e);
+            BLEResponseHardwareSetTxpower += (sender, e) => Log(e);
+            BLEResponseHardwareTimerComparator += (sender, e) => Log(e);
+            BLEResponseHardwareIOPortIrqEnable += (sender, e) => Log(e);
+            BLEResponseHardwareIOPortIrqDirection += (sender, e) => Log(e);
+            BLEResponseHardwareAnalogComparatorEnable += (sender, e) => Log(e);
+            BLEResponseHardwareAnalogComparatorRead += (sender, e) => Log(e);
+            BLEResponseHardwareAnalogComparatorConfigIrq += (sender, e) => Log(e);
+            BLEResponseHardwareSetRxgain += (sender, e) => Log(e);
+            BLEResponseHardwareUsbEnable += (sender, e) => Log(e);
+            BLEResponseTestPHYTX += (sender, e) => Log(e);
+            BLEResponseTestPHYRX += (sender, e) => Log(e);
+            BLEResponseTestPHYEnd += (sender, e) => Log(e);
+            BLEResponseTestPHYReset += (sender, e) => Log(e);
+            BLEResponseTestGetChannelMap += (sender, e) => Log(e);
+            BLEResponseTestDebug += (sender, e) => Log(e);
+            BLEResponseTestChannelMode += (sender, e) => Log(e);
+            BLEResponseDFUReset += (sender, e) => Log(e);
+            BLEResponseDFUFlashSetAddress += (sender, e) => Log(e);
+            BLEResponseDFUFlashUpload += (sender, e) => Log(e);
+            BLEResponseDFUFlashUploadFinish += (sender, e) => Log(e);
+
+            BLEEventSystemBoot += (sender, e) => Log(e);
+            BLEEventSystemDebug += (sender, e) => Log(e);
+            BLEEventSystemEndpointWatermarkRX += (sender, e) => Log(e);
+            BLEEventSystemEndpointWatermarkTX += (sender, e) => Log(e);
+            BLEEventSystemScriptFailure += (sender, e) => Log(e);
+            BLEEventSystemNoLicenseKey += (sender, e) => Log(e);
+            BLEEventSystemProtocolError += (sender, e) => Log(e);
+            BLEEventFlashPSKey += (sender, e) => Log(e);
+            BLEEventAttributesValue += (sender, e) => Log(e);
+            BLEEventAttributesUserReadRequest += (sender, e) => Log(e);
+            BLEEventAttributesStatus += (sender, e) => Log(e);
+            BLEEventConnectionStatus += (sender, e) => Log(e);
+            BLEEventConnectionVersionInd += (sender, e) => Log(e);
+            BLEEventConnectionFeatureInd += (sender, e) => Log(e);
+            BLEEventConnectionRawRX += (sender, e) => Log(e);
+            BLEEventConnectionDisconnected += (sender, e) => Log(e);
+            BLEEventATTClientIndicated += (sender, e) => Log(e);
+            BLEEventATTClientProcedureCompleted += (sender, e) => Log(e);
+            BLEEventATTClientGroupFound += (sender, e) => Log(e);
+            BLEEventATTClientAttributeFound += (sender, e) => Log(e);
+            BLEEventATTClientFindInformationFound += (sender, e) => Log(e);
+            BLEEventATTClientAttributeValue += (sender, e) => Log(e);
+            BLEEventATTClientReadMultipleResponse += (sender, e) => Log(e);
+            BLEEventSMSMPData += (sender, e) => Log(e);
+            BLEEventSMBondingFail += (sender, e) => Log(e);
+            BLEEventSMPasskeyDisplay += (sender, e) => Log(e);
+            BLEEventSMPasskeyRequest += (sender, e) => Log(e);
+            BLEEventSMBondStatus += (sender, e) => Log(e);
+            BLEEventGAPScanResponse += (sender, e) => Log(e);
+            BLEEventGAPModeChanged += (sender, e) => Log(e);
+            BLEEventHardwareIOPortStatus += (sender, e) => Log(e);
+            BLEEventHardwareSoftTimer += (sender, e) => Log(e);
+            BLEEventHardwareADCResult += (sender, e) => Log(e);
+            BLEEventHardwareAnalogComparatorStatus += (sender, e) => Log(e);
+            BLEEventDFUBoot += (sender, e) => Log(e);
+        }
+
+        public override UInt16 SendCommand(System.IO.Ports.SerialPort port, Byte[] cmd)
+        {
+            _logger?.LogTrace("Send bglib command, Data={data}", cmd.ToHexString());
+
+            return base.SendCommand(port, cmd);
+        }
+
+        private void Log(object e)
         {
             var type = e.GetType();
-            var fields = new List<string>();
+            var fields = new Dictionary<string, string>();
+            fields.Add("eventType", type.Name);
             foreach (var field in type.GetFields())
             {
                 var value = field.GetValue(e);
                 if (value is byte[])
                 {
-                    fields.Add($"{field.Name}={((byte[])value).ToHexString()}");
+                    fields.Add(field.Name, ((byte[])value).ToHexString());
                 }
                 else
                 {
-                    fields.Add($"{field.Name}={value}");
+                    fields.Add(field.Name, value.ToString());
                 }
             }
-            Console.WriteLine($"{type} triggered, {string.Join(", ", fields)}");
-        }
-
-        public BGLibDebug()
-        {
-            BLEResponseSystemReset += (sender, e) => Print(e);
-            BLEResponseSystemHello += (sender, e) => Print(e);
-            BLEResponseSystemAddressGet += (sender, e) => Print(e);
-            BLEResponseSystemRegWrite += (sender, e) => Print(e);
-            BLEResponseSystemRegRead += (sender, e) => Print(e);
-            BLEResponseSystemGetCounters += (sender, e) => Print(e);
-            BLEResponseSystemGetConnections += (sender, e) => Print(e);
-            BLEResponseSystemReadMemory += (sender, e) => Print(e);
-            BLEResponseSystemGetInfo += (sender, e) => Print(e);
-            BLEResponseSystemEndpointTX += (sender, e) => Print(e);
-            BLEResponseSystemWhitelistAppend += (sender, e) => Print(e);
-            BLEResponseSystemWhitelistRemove += (sender, e) => Print(e);
-            BLEResponseSystemWhitelistClear += (sender, e) => Print(e);
-            BLEResponseSystemEndpointRX += (sender, e) => Print(e);
-            BLEResponseSystemEndpointSetWatermarks += (sender, e) => Print(e);
-            BLEResponseSystemAesSetkey += (sender, e) => Print(e);
-            BLEResponseSystemAesEncrypt += (sender, e) => Print(e);
-            BLEResponseSystemAesDecrypt += (sender, e) => Print(e);
-            BLEResponseFlashPSDefrag += (sender, e) => Print(e);
-            BLEResponseFlashPSDump += (sender, e) => Print(e);
-            BLEResponseFlashPSEraseAll += (sender, e) => Print(e);
-            BLEResponseFlashPSSave += (sender, e) => Print(e);
-            BLEResponseFlashPSLoad += (sender, e) => Print(e);
-            BLEResponseFlashPSErase += (sender, e) => Print(e);
-            BLEResponseFlashErasePage += (sender, e) => Print(e);
-            BLEResponseFlashWriteData += (sender, e) => Print(e);
-            BLEResponseFlashReadData += (sender, e) => Print(e);
-            BLEResponseAttributesWrite += (sender, e) => Print(e);
-            BLEResponseAttributesRead += (sender, e) => Print(e);
-            BLEResponseAttributesReadType += (sender, e) => Print(e);
-            BLEResponseAttributesUserReadResponse += (sender, e) => Print(e);
-            BLEResponseAttributesUserWriteResponse += (sender, e) => Print(e);
-            BLEResponseAttributesSend += (sender, e) => Print(e);
-            BLEResponseConnectionDisconnect += (sender, e) => Print(e);
-            BLEResponseConnectionGetRssi += (sender, e) => Print(e);
-            BLEResponseConnectionUpdate += (sender, e) => Print(e);
-            BLEResponseConnectionVersionUpdate += (sender, e) => Print(e);
-            BLEResponseConnectionChannelMapGet += (sender, e) => Print(e);
-            BLEResponseConnectionChannelMapSet += (sender, e) => Print(e);
-            BLEResponseConnectionFeaturesGet += (sender, e) => Print(e);
-            BLEResponseConnectionGetStatus += (sender, e) => Print(e);
-            BLEResponseConnectionRawTX += (sender, e) => Print(e);
-            BLEResponseATTClientFindByTypeValue += (sender, e) => Print(e);
-            BLEResponseATTClientReadByGroupType += (sender, e) => Print(e);
-            BLEResponseATTClientReadByType += (sender, e) => Print(e);
-            BLEResponseATTClientFindInformation += (sender, e) => Print(e);
-            BLEResponseATTClientReadByHandle += (sender, e) => Print(e);
-            BLEResponseATTClientAttributeWrite += (sender, e) => Print(e);
-            BLEResponseATTClientWriteCommand += (sender, e) => Print(e);
-            BLEResponseATTClientIndicateConfirm += (sender, e) => Print(e);
-            BLEResponseATTClientReadLong += (sender, e) => Print(e);
-            BLEResponseATTClientPrepareWrite += (sender, e) => Print(e);
-            BLEResponseATTClientExecuteWrite += (sender, e) => Print(e);
-            BLEResponseATTClientReadMultiple += (sender, e) => Print(e);
-            BLEResponseSMEncryptStart += (sender, e) => Print(e);
-            BLEResponseSMSetBondableMode += (sender, e) => Print(e);
-            BLEResponseSMDeleteBonding += (sender, e) => Print(e);
-            BLEResponseSMSetParameters += (sender, e) => Print(e);
-            BLEResponseSMPasskeyEntry += (sender, e) => Print(e);
-            BLEResponseSMGetBonds += (sender, e) => Print(e);
-            BLEResponseSMSetOobData += (sender, e) => Print(e);
-            BLEResponseSMWhitelistBonds += (sender, e) => Print(e);
-            BLEResponseGAPSetPrivacyFlags += (sender, e) => Print(e);
-            BLEResponseGAPSetMode += (sender, e) => Print(e);
-            BLEResponseGAPDiscover += (sender, e) => Print(e);
-            BLEResponseGAPConnectDirect += (sender, e) => Print(e);
-            BLEResponseGAPEndProcedure += (sender, e) => Print(e);
-            BLEResponseGAPConnectSelective += (sender, e) => Print(e);
-            BLEResponseGAPSetFiltering += (sender, e) => Print(e);
-            BLEResponseGAPSetScanParameters += (sender, e) => Print(e);
-            BLEResponseGAPSetAdvParameters += (sender, e) => Print(e);
-            BLEResponseGAPSetAdvData += (sender, e) => Print(e);
-            BLEResponseGAPSetDirectedConnectableMode += (sender, e) => Print(e);
-            BLEResponseHardwareIOPortConfigIrq += (sender, e) => Print(e);
-            BLEResponseHardwareSetSoftTimer += (sender, e) => Print(e);
-            BLEResponseHardwareADCRead += (sender, e) => Print(e);
-            BLEResponseHardwareIOPortConfigDirection += (sender, e) => Print(e);
-            BLEResponseHardwareIOPortConfigFunction += (sender, e) => Print(e);
-            BLEResponseHardwareIOPortConfigPull += (sender, e) => Print(e);
-            BLEResponseHardwareIOPortWrite += (sender, e) => Print(e);
-            BLEResponseHardwareIOPortRead += (sender, e) => Print(e);
-            BLEResponseHardwareSPIConfig += (sender, e) => Print(e);
-            BLEResponseHardwareSPITransfer += (sender, e) => Print(e);
-            BLEResponseHardwareI2CRead += (sender, e) => Print(e);
-            BLEResponseHardwareI2CWrite += (sender, e) => Print(e);
-            BLEResponseHardwareSetTxpower += (sender, e) => Print(e);
-            BLEResponseHardwareTimerComparator += (sender, e) => Print(e);
-            BLEResponseHardwareIOPortIrqEnable += (sender, e) => Print(e);
-            BLEResponseHardwareIOPortIrqDirection += (sender, e) => Print(e);
-            BLEResponseHardwareAnalogComparatorEnable += (sender, e) => Print(e);
-            BLEResponseHardwareAnalogComparatorRead += (sender, e) => Print(e);
-            BLEResponseHardwareAnalogComparatorConfigIrq += (sender, e) => Print(e);
-            BLEResponseHardwareSetRxgain += (sender, e) => Print(e);
-            BLEResponseHardwareUsbEnable += (sender, e) => Print(e);
-            BLEResponseTestPHYTX += (sender, e) => Print(e);
-            BLEResponseTestPHYRX += (sender, e) => Print(e);
-            BLEResponseTestPHYEnd += (sender, e) => Print(e);
-            BLEResponseTestPHYReset += (sender, e) => Print(e);
-            BLEResponseTestGetChannelMap += (sender, e) => Print(e);
-            BLEResponseTestDebug += (sender, e) => Print(e);
-            BLEResponseTestChannelMode += (sender, e) => Print(e);
-            BLEResponseDFUReset += (sender, e) => Print(e);
-            BLEResponseDFUFlashSetAddress += (sender, e) => Print(e);
-            BLEResponseDFUFlashUpload += (sender, e) => Print(e);
-            BLEResponseDFUFlashUploadFinish += (sender, e) => Print(e);
-
-            BLEEventSystemBoot += (sender, e) => Print(e);
-            BLEEventSystemDebug += (sender, e) => Print(e);
-            BLEEventSystemEndpointWatermarkRX += (sender, e) => Print(e);
-            BLEEventSystemEndpointWatermarkTX += (sender, e) => Print(e);
-            BLEEventSystemScriptFailure += (sender, e) => Print(e);
-            BLEEventSystemNoLicenseKey += (sender, e) => Print(e);
-            BLEEventSystemProtocolError += (sender, e) => Print(e);
-            BLEEventFlashPSKey += (sender, e) => Print(e);
-            BLEEventAttributesValue += (sender, e) => Print(e);
-            BLEEventAttributesUserReadRequest += (sender, e) => Print(e);
-            BLEEventAttributesStatus += (sender, e) => Print(e);
-            BLEEventConnectionStatus += (sender, e) => Print(e);
-            BLEEventConnectionVersionInd += (sender, e) => Print(e);
-            BLEEventConnectionFeatureInd += (sender, e) => Print(e);
-            BLEEventConnectionRawRX += (sender, e) => Print(e);
-            BLEEventConnectionDisconnected += (sender, e) => Print(e);
-            BLEEventATTClientIndicated += (sender, e) => Print(e);
-            BLEEventATTClientProcedureCompleted += (sender, e) => Print(e);
-            BLEEventATTClientGroupFound += (sender, e) => Print(e);
-            BLEEventATTClientAttributeFound += (sender, e) => Print(e);
-            BLEEventATTClientFindInformationFound += (sender, e) => Print(e);
-            BLEEventATTClientAttributeValue += (sender, e) => Print(e);
-            BLEEventATTClientReadMultipleResponse += (sender, e) => Print(e);
-            BLEEventSMSMPData += (sender, e) => Print(e);
-            BLEEventSMBondingFail += (sender, e) => Print(e);
-            BLEEventSMPasskeyDisplay += (sender, e) => Print(e);
-            BLEEventSMPasskeyRequest += (sender, e) => Print(e);
-            BLEEventSMBondStatus += (sender, e) => Print(e);
-            BLEEventGAPScanResponse += (sender, e) => Print(e);
-            BLEEventGAPModeChanged += (sender, e) => Print(e);
-            BLEEventHardwareIOPortStatus += (sender, e) => Print(e);
-            BLEEventHardwareSoftTimer += (sender, e) => Print(e);
-            BLEEventHardwareADCResult += (sender, e) => Print(e);
-            BLEEventHardwareAnalogComparatorStatus += (sender, e) => Print(e);
-            BLEEventDFUBoot += (sender, e) => Print(e);
+            var msg = $"Event triggered, {string.Join(", ", fields.Keys.Select(x => $"{x}={{{x}}}"))}";
+            _logger?.LogTrace(msg, fields.Values.ToArray<object>());
         }
     }
 }

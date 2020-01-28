@@ -3799,7 +3799,7 @@ namespace Bluegiga
             return 0; // parsed successfully
         }
 
-        public UInt16 SendCommand(System.IO.Ports.SerialPort port, Byte[] cmd)
+        public virtual UInt16 SendCommand(System.IO.Ports.SerialPort port, Byte[] cmd)
         {
             SetBusy(true);
             if (bgapiPacketMode) port.Write(new Byte[] { (Byte)cmd.Length }, 0, 1);
