@@ -13,10 +13,11 @@ Install nuget package [BGLibExt](https://www.nuget.org/packages/BGLibExt/)
 ### Discover devices
 
 ```c#
-var bleModuleConnection = new BleModuleConnection();
+var bgLib = new BGLib();
+var bleModuleConnection = new BleModuleConnection(bgLib);
 bleModuleConnection.Start("COM1");
 
-var bleDeviceDiscovery = new BleDeviceDiscovery(new BGLib(), bleModuleConnection);
+var bleDeviceDiscovery = new BleDeviceDiscovery(bgLib, bleModuleConnection);
 bleDeviceDiscovery.ScanResponse += (sender, args) =>
 {
 };
@@ -30,10 +31,11 @@ bleModuleConnection.Stop();
 ### Connect to device
 
 ```c#
-var bleModuleConnection = new BleModuleConnection();
+var bgLib = new BGLib();
+var bleModuleConnection = new BleModuleConnection(bgLib);
 bleModuleConnection.Start("COM1");
 
-var bleDeviceManager = new BleDeviceManager(new BGLib(), bleModuleConnection);
+var bleDeviceManager = new BleDeviceManager(bgLib, bleModuleConnection);
 var bleDevice = await bleDeviceManager.ConnectAsync(address, addressType);
 
 bleModuleConnection.Stop();
@@ -42,10 +44,11 @@ bleModuleConnection.Stop();
 ### Disconnect from device
 
 ```c#
-var bleModuleConnection = new BleModuleConnection();
+var bgLib = new BGLib();
+var bleModuleConnection = new BleModuleConnection(bgLib);
 bleModuleConnection.Start("COM1");
 
-var bleDeviceManager = new BleDeviceManager(new BGLib(), bleModuleConnection);
+var bleDeviceManager = new BleDeviceManager(bgLib, bleModuleConnection);
 var bleDevice = await bleDeviceManager.ConnectAsync(address, addressType);
 await bleDevice.DisconnectAsync();
 
@@ -55,10 +58,11 @@ bleModuleConnection.Stop();
 ### Read characteristic
 
 ```c#
-var bleModuleConnection = new BleModuleConnection();
+var bgLib = new BGLib();
+var bleModuleConnection = new BleModuleConnection(bgLib);
 bleModuleConnection.Start("COM1");
 
-var bleDeviceManager = new BleDeviceManager(new BGLib(), bleModuleConnection);
+var bleDeviceManager = new BleDeviceManager(bgLib, bleModuleConnection);
 var bleDevice = await bleDeviceManager.ConnectAsync(address, addressType);
 var data = await bleDevice.CharacteristicsByUuid[characteristicId].ReadValueAsync();
 await bleDevice.DisconnectAsync();
@@ -69,10 +73,11 @@ bleModuleConnection.Stop();
 ### Write characteristic
 
 ```c#
-var bleModuleConnection = new BleModuleConnection();
+var bgLib = new BGLib();
+var bleModuleConnection = new BleModuleConnection(bgLib);
 bleModuleConnection.Start("COM1");
 
-var bleDeviceManager = new BleDeviceManager(new BGLib(), bleModuleConnection);
+var bleDeviceManager = new BleDeviceManager(bgLib, bleModuleConnection);
 var bleDevice = await bleDeviceManager.ConnectAsync(address, addressType);
 await bleDevice.CharacteristicsByUuid[characteristicId].WriteValueAsync();
 await bleDevice.DisconnectAsync();
@@ -83,10 +88,11 @@ bleModuleConnection.Stop();
 ### Characteristic notifications
 
 ```c#
-var bleModuleConnection = new BleModuleConnection();
+var bgLib = new BGLib();
+var bleModuleConnection = new BleModuleConnection(bgLib);
 bleModuleConnection.Start("COM1");
 
-var bleDeviceManager = new BleDeviceManager(new BGLib(), bleModuleConnection);
+var bleDeviceManager = new BleDeviceManager(bgLib, bleModuleConnection);
 var bleDevice = await bleDeviceManager.ConnectAsync(address, addressType);
 bleDevice.CharacteristicsByUuid[characteristicId].ValueChanged += (sender, args) =>
 {
