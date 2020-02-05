@@ -46,7 +46,7 @@ namespace BGLibExt
                 }
             }
 
-            var bleDevice = new BleDevice(_bgLib, _bleModuleConnection, _logger, connectionStatus.connection, services);
+            var bleDevice = new BleDevice(_bgLib, _bleModuleConnection, _logger, connectionStatus.connection, address, addressType, services);
             return bleDevice;
         }
 

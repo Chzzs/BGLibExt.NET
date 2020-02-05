@@ -22,15 +22,19 @@ namespace BGLibExt
         public Dictionary<ushort, BleCharacteristic> CharacteristicsByHandle { get; private set; } = new Dictionary<ushort, BleCharacteristic>();
         public Dictionary<Guid, BleCharacteristic> CharacteristicsByUuid { get; private set; } = new Dictionary<Guid, BleCharacteristic>();
         public bool IsConnected { get; private set; }
+        public byte[] Address { get; private set; }
+        public BleAddressType AddressType { get; private set; }
         public List<BleService> Services { get; private set; }
 
-        internal BleDevice(BGLib bgLib, BleModuleConnection bleModuleConnection, ILogger logger, byte connectionHandle, List<BleService> services)
+        internal BleDevice(BGLib bgLib, BleModuleConnection bleModuleConnection, ILogger logger, byte connectionHandle, byte[] address, BleAddressType addressType, List<BleService> services)
         {
             _bgLib = bgLib;
             _bleModuleConnection = bleModuleConnection;
             _logger = logger;
             _connectionHandle = connectionHandle;
-
+            
+            Address = address;
+            AddressType = addressType;
             Services = services;
 
             services.ForEach(service =>
