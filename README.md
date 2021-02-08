@@ -79,7 +79,8 @@ bleModuleConnection.Start("COM1");
 
 var bleDeviceManager = new BleDeviceManager(bgLib, bleModuleConnection);
 var bleDevice = await bleDeviceManager.ConnectAsync(address, addressType);
-await bleDevice.CharacteristicsByUuid[characteristicId].WriteValueAsync();
+var data = new byte[] { 1, 2, 3, 4 };
+await bleDevice.CharacteristicsByUuid[characteristicId].WriteValueAsync(data);
 await bleDevice.DisconnectAsync();
 
 bleModuleConnection.Stop();
@@ -97,7 +98,7 @@ var bleDevice = await bleDeviceManager.ConnectAsync(address, addressType);
 bleDevice.CharacteristicsByUuid[characteristicId].ValueChanged += (sender, args) =>
 {
 }
-await bleDevice.CharacteristicsByUuid[characteristicId].WriteCccAsync(BleCCCValue.NotificationsEnabled);
+await bleDevice.CharacteristicsByUuid[characteristicId].WriteCccAsync(BleCccValue.NotificationsEnabled);
 await Task.Delay(10000);
 await bleDevice.DisconnectAsync();
 
