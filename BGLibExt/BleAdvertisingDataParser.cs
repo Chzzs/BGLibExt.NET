@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BGLibExt
@@ -9,20 +10,27 @@ namespace BGLibExt
         {
             var advertisingData = new List<BleAdvertisingData>();
 
-            if (rawData.Length == 0)
+            try
             {
-                return advertisingData;
-            }
+                if (rawData.Length == 0)
+                {
+                    return advertisingData;
+                }
 
-            var index = 0;
-            do
+                var index = 0;
+                do
+                {
+                    var length = rawData[index];
+                    var type = rawData[index + 1];
+                    var data = rawData.Skip(index + 2).Take(length - 1).ToArray();
+                    advertisingData.Add(new BleAdvertisingData((BleAdvertisingDataType)type, data));
+                    index += length + 1;
+                } while (index < rawData.Length);
+            }
+            catch (Exception)
             {
-                var length = rawData[index];
-                var type = rawData[index + 1];
-                var data = rawData.Skip(index + 2).Take(length - 1).ToArray();
-                advertisingData.Add(new BleAdvertisingData((BleAdvertisingDataType)type, data));
-                index += length + 1;
-            } while (index < rawData.Length);
+                // TODO: Log advertising data parsing errors
+            }
 
             return advertisingData;
         }
