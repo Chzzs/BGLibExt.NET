@@ -10,13 +10,13 @@ namespace BGLibExt
         {
             var advertisingData = new List<BleAdvertisingData>();
 
+            if (rawData.Length == 0)
+            {
+                return advertisingData;
+            }
+
             try
             {
-                if (rawData.Length == 0)
-                {
-                    return advertisingData;
-                }
-
                 var index = 0;
                 do
                 {
