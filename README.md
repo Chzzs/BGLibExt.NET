@@ -86,7 +86,7 @@ await bleDevice.DisconnectAsync();
 bleModuleConnection.Stop();
 ```
 
-### Characteristic notifications
+### Characteristic value changed notifications
 
 ```c#
 var bgLib = new BGLib();
