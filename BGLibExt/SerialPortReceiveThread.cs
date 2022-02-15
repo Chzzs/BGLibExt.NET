@@ -9,15 +9,13 @@ namespace BGLibExt
     {
         private readonly BGLib _bgLib;
         private readonly SerialPort _serialPort;
-        private readonly int _sleepTime;
         private Thread _receiveThread;
         private bool _stopThread;
 
-        internal SerialPortReceiveThread(SerialPort serialPort, BGLib bgLib, int sleepTime)
+        internal SerialPortReceiveThread(SerialPort serialPort, BGLib bgLib)
         {
             _serialPort = serialPort;
             _bgLib = bgLib;
-            _sleepTime = sleepTime;
         }
 
         public void Start()
@@ -40,18 +38,13 @@ namespace BGLibExt
 
         private void Run()
         {
-            byte[] buffer = new byte[128]; // The serial port normally only yields 1 byte at a time
+            var buffer = new byte[128]; // The serial port normally only yields 1 byte at a time
             while (!_stopThread && _serialPort != null && _serialPort.IsOpen)
             {
-                int readBytes = _serialPort.Read(buffer, 0, buffer.Length);
-                for (int i = 0; i < readBytes; i++)
+                var readBytes = _serialPort.Read(buffer, 0, buffer.Length);
+                for (var i = 0; i < readBytes; i++)
                 {
                     _bgLib.Parse(buffer[i]);
-                }
-
-                if (_sleepTime > 0)
-                {
-                    Thread.Sleep(_sleepTime);
                 }
             }
         }
