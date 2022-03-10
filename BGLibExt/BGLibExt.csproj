@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Company>BGLibExt</Company>
     <Product>BGLibExt</Product>
-    <Version>2.0.2.0</Version>
+    <Version>2.0.3.0</Version>
     <PackageId>BGLibExt</PackageId>
     <PackageReleaseNotes>
       v2.0.0
@@ -16,6 +16,9 @@
 
       v2.0.2
       - Reduced CPU usage and memory allocations during serial port reading (thanks to https://github.com/canton7)
+
+      v2.0.3
+      - Fixed closing of serial port
     </PackageReleaseNotes>
     <Authors>BGLibExt</Authors>
     <PackageProjectUrl>https://github.com/BGLibExt/BGLibExt.NET</PackageProjectUrl>

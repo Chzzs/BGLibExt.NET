@@ -59,11 +59,14 @@ namespace BGLibExt
             _logger?.LogDebug($"Stop BLE112 module connection");
 
             _logger?.LogDebug($"Stop serial port receive thread");
-            _serialPortReceiveThread.Stop();
+            _serialPortReceiveThread.StopThread();
 
             _logger?.LogDebug($"Close and dispose serial port, Port={SerialPort.PortName}");
             SerialPort.Close();
             SerialPort.Dispose();
+
+            _logger?.LogDebug($"Wait for serial port receive thread to stop");
+            _serialPortReceiveThread.WaitForThreadToStop();
         }
     }
 }
