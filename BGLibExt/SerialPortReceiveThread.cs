@@ -30,18 +30,34 @@ namespace BGLibExt
             _receiveThread.Start();
         }
 
-        public void Stop()
+        public void StopThread()
         {
             _stopThread = true;
+        }
+
+        public void WaitForThreadToStop()
+        {
             _receiveThread.Join();
         }
 
         private void Run()
         {
-            var buffer = new byte[128]; // The serial port normally only yields 1 byte at a time
-            while (!_stopThread && _serialPort != null && _serialPort.IsOpen)
+            var buffer = new byte[128];
+
+            while (!_stopThread)
             {
-                var readBytes = _serialPort.Read(buffer, 0, buffer.Length);
+                var readBytes = 0;
+                try
+                {
+                    readBytes = _serialPort.Read(buffer, 0, buffer.Length);
+                }
+                catch
+                {
+                    if (!_stopThread) // Ignore exceptions while stopping the read thread
+                    {
+                        throw;
+                    }
+                }
                 for (var i = 0; i < readBytes; i++)
                 {
                     _bgLib.Parse(buffer[i]);
