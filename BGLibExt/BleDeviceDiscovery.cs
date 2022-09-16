@@ -30,8 +30,11 @@ namespace BGLibExt
 
             _bgLib.BLEEventGAPScanResponse += OnScanResponse;
 
-            _bgLib.SendCommand(_bleModuleConnection.SerialPort, _bgLib.BLECommandGAPSetScanParameters(0xC8, 0xC8, 1));
-            _bgLib.SendCommand(_bleModuleConnection.SerialPort, _bgLib.BLECommandGAPDiscover(1));
+            //    _bgLib.SendCommand(_bleModuleConnection.SerialPort, _bgLib.BLECommandGAPSetScanParameters(0xC8, 0xC8, 1));
+            _bgLib.SendCommand(_bleModuleConnection.SerialPort, _bgLib.BLECommandGAPSetScanParameters(0x0, 0x07, 0x04));
+            _bgLib.SendCommand(_bleModuleConnection.SerialPort, _bgLib.BLECommandSMSetBondableMode(1));
+            //   _bgLib.SendCommand(_bleModuleConnection.SerialPort, _bgLib.BLECommandGAPDiscover(0x01));
+            _bgLib.SendCommand(_bleModuleConnection.SerialPort, _bgLib.BLECommandGAPDiscover(0x02));
         }
 
         /// <summary>

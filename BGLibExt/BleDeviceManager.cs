@@ -28,10 +28,10 @@ namespace BGLibExt
         {
             var connectCommand = new BleConnectCommand(_bgLib, _bleModuleConnection, _logger);
             var connectionStatus = await connectCommand.ExecuteAsync(address, addressType);
-
             var findServicesCommand = new BleFindServicesCommand(_bgLib, _bleModuleConnection, _logger);
             var findCharacteristicsCommand = new BleFindCharacteristicsCommand(_bgLib, _bleModuleConnection, _logger);
             var services = await findServicesCommand.ExecuteAsync(connectionStatus.connection);
+
             foreach (var service in services)
             {
                 _logger?.LogDebug($"Service found Uuid={service.Uuid}");

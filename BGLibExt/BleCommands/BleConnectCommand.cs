@@ -30,6 +30,8 @@ namespace BGLibExt.BleCommands
 
                 void OnConnectionStatus(object sender, StatusEventArgs e)
                 {
+                    Logger?.LogDebug($"Connecting flags are {e.flags}");
+
                     if ((e.flags & 0x05) == 0x05)
                     {
                         taskCompletionSource.SetResult(e);

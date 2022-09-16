@@ -21,7 +21,7 @@ namespace BGLibExt.BleCommands
 
         public async Task<StatusEventArgs> ExecuteAsync(byte handle, CancellationToken cancellationToken, int timeout = DefaultTimeout)
         {
-            Logger?.LogInformation($"Connect to device handle {handle}");
+            Logger?.LogDebug($"Encrypting connection with handle {handle}");
 
             var taskCompletionSource = new TaskCompletionSource<StatusEventArgs>();
             using (var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
@@ -30,8 +30,8 @@ namespace BGLibExt.BleCommands
 
                 void OnConnectionStatus(object sender, StatusEventArgs e)
                 {
-                    Logger?.LogInformation($"{e.flags}");
-                    if ((e.flags & 0x05) == 0x05)
+                    Logger?.LogDebug($"Encrypting flags are {e.flags}");
+                    if ((e.flags & 0x03) == 0x03)
                     {
                         taskCompletionSource.SetResult(e);
                     }
