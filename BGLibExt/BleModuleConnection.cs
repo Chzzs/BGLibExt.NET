@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.IO.Ports;
+using System.Threading.Tasks;
+
 
 namespace BGLibExt
 {
@@ -30,6 +32,7 @@ namespace BGLibExt
             Start(portName);
         }
 
+
         /// <summary>
         ///  Start the BLE112 serial communication
         /// </summary>
@@ -49,6 +52,20 @@ namespace BGLibExt
             _serialPortReceiveThread = new SerialPortReceiveThread(SerialPort, _bgLib);
             _logger?.LogDebug($"Start serial port receive thread");
             _serialPortReceiveThread.Start();
+        }
+
+        public async void Hello()
+        {
+            var command = new BleCommands.BleSystemHelloCommand(_bgLib, this, _logger);
+            var connectionStatus = await command.ExecuteAsync();
+        }
+
+        public async Task<Byte[]> GetAddress()
+        {
+            var command = new BleCommands.BleSystemGetAddressCommand(_bgLib, this, _logger);
+            var response = await command.ExecuteAsync();
+
+            return response.address;
         }
 
         /// <summary>

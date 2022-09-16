@@ -97,5 +97,10 @@ namespace BGLibExt
                 IsConnected = false;
             }
         }
+        public async Task<StatusEventArgs> Encrypt()
+        {
+            var encryptCommand = new BleEncryptCommand(_bgLib, _bleModuleConnection, _logger);
+            return await encryptCommand.ExecuteAsync(this._connectionHandle);
+        }
     }
 }
